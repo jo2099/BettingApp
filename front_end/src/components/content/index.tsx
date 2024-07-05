@@ -9,7 +9,6 @@ interface IContentProps {
 const Content: React.FC<IContentProps> = ({children}) => {
     return(
         <Container>
-            <h1>Content</h1>
         </Container>
     );
 };

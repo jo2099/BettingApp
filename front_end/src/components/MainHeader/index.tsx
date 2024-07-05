@@ -1,9 +1,10 @@
 import React from "react";
 import { Container } from "./styles";
+import { UserIcon } from "../userIcon";
 export const MainHeader: React.FC = () => {
     return (
         <Container>
-            <h1>MainHeader</h1>
+            <UserIcon />
         </Container>
     )
 }

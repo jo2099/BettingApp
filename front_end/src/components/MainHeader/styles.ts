@@ -2,8 +2,10 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     font-size: 2vmin;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     grid-area: header;
-    background-color: #f34;
+    background-color: #F51414;
     color: #fff;
     `;
