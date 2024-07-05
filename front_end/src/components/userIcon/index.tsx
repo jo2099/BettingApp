@@ -1,5 +1,5 @@
 import React,{useEffect, useState,useRef} from "react"
-import { Container,UserMenu,UserButton } from "./styles"
+import { Container,UserMenu,UserButton,MenuButton } from "./styles"
 import icon from "../../assets/user-white.svg"
 
 export const UserIcon: React.FC = () => {
@@ -34,8 +34,8 @@ export const UserIcon: React.FC = () => {
             </UserButton>
             {isMenuOpen && (
                 <UserMenu ref={menuRef}>
-                    <button>Perfil</button>
-                    <button>Sair</button>
+                    <MenuButton>Perfil</MenuButton>
+                    <MenuButton>Sair</MenuButton>
                 </UserMenu>
             )}
         </Container>

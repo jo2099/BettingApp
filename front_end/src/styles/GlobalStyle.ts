@@ -5,6 +5,7 @@ export const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        font-family: "Roboto", sans-serif;
     }
 
     html, body, #root {
@@ -14,7 +15,7 @@ export const GlobalStyle = createGlobalStyle`
     *, button, input {
         border: 0;
         outline: 0;
-        font-family: 'Roboto', sans-serif;
+        
     }
 
     button {

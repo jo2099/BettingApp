@@ -16,11 +16,9 @@ export const Container = styled.div`
     display: flex;
     justify-content: flex-end;
     background-color: #F51414;
-    /* background-color: blueviolet; */
     color: #fff;
-    align-items: flex-start; /* Garante que o container se ajuste verticalmente ao conteúdo */
-    width: fit-content;
-    margin-right: 30px;
+    align-items: flex-start; 
+    margin-right: 45px;
     position:relative;
 `;
 
@@ -29,10 +27,12 @@ export const UserMenu = styled.div`
     background-color: #fff;
     position: absolute;
     top: 100%;
-    left: -75%;
-    width: 100px;
-    height: 80px;
-    border-radius: 10px;
+    left: -70px;
+    width: 6vw;
+    height: fit-content;
+    padding-bottom: 30px;
+    padding-top: 30px;
+    border-radius: 5px;
     color: #000;
     flex-direction: column;
     justify-content: center;
@@ -47,5 +47,18 @@ export const UserButton = styled.button`
     &:hover img{
         transform: scale(1.1);
         transition: transform 0.2s;
+    }
+`;
+
+export const MenuButton = styled.button`
+    background-color: #3140C3;
+    color: #fff;
+    border: none;
+    width: 70px;
+    height: 25px;
+    border-radius: 25%;
+    font-weight: bold;
+    &:hover {
+        background-color: #F51414;
     }
 `;

@@ -5,5 +5,6 @@ export const Container = styled.div`
     display: flex;
     background-color: #181626;
     grid-area: content;
+    overflow: auto;
     `;
 
