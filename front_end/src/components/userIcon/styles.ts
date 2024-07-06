@@ -56,7 +56,7 @@ export const MenuButton = styled.button`
     border: none;
     width: 70px;
     height: 25px;
-    border-radius: 25%;
+    border-radius: 5px;
     font-weight: bold;
     &:hover {
         background-color: #F51414;

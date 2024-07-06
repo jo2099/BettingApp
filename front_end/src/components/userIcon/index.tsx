@@ -1,11 +1,13 @@
 import React,{useEffect, useState,useRef} from "react"
 import { Container,UserMenu,UserButton,MenuButton } from "./styles"
 import icon from "../../assets/user-white.svg"
+import { useAuth } from "../../hooks/auth"
 
 export const UserIcon: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
     const buttonRef = useRef<HTMLButtonElement>(null)
+    const {signOut} = useAuth();
 
     const handleMenu = (event:React.MouseEvent) => {
         event.stopPropagation();
@@ -35,7 +37,7 @@ export const UserIcon: React.FC = () => {
             {isMenuOpen && (
                 <UserMenu ref={menuRef}>
                     <MenuButton>Perfil</MenuButton>
-                    <MenuButton>Sair</MenuButton>
+                    <MenuButton onClick={signOut}>Sair</MenuButton>
                 </UserMenu>
             )}
         </Container>

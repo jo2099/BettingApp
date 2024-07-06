@@ -13,7 +13,7 @@ export const LoginForm = styled.form`
     padding: 25px;
     border: 1px solid #ccc;
     background-color: #fff;
-    border-radius: 5px;
+    border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -24,6 +24,7 @@ export const Title = styled.h1`
     font: normal;
     font-size: 6vh;
     margin-bottom: 50px; /* Espaçamento inferior */
+    color: #f51414;
 `;
 
 export const FormField = styled.div`
@@ -48,7 +49,7 @@ export const Input = styled.input`
 export const Button = styled.button`
     font: normal;
     padding: 10px 20px;
-    background-color: black;
+    background-color: #3140c3;
     color: #fff;
     border: none;
     border-radius: 3px;
@@ -57,6 +58,7 @@ export const Button = styled.button`
     transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: #0056b3;
+        background-color: #000;
+        color: #fff;
     }
 `;

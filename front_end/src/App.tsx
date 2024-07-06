@@ -9,10 +9,7 @@ const App: React.FC = () => {
   return (
     <>
       <GlobalStyle />
-      <Layout>
-        {/* <Home /> */}
         <Routes />
-      </Layout>
     </>
   )
 }

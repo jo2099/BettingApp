@@ -1,21 +1,20 @@
 import React from "react";
 import AuthRoutes from "./auth.routes";
+import AppRoutes from "./app.routes";
 import { BrowserRouter } from "react-router-dom";
 import { useAuth } from "../hooks/auth";
 import Home from "../pages/Home";
-
+import Layout from "../components/layout";
 const Routes: React.FC = () => {
     const {logged} = useAuth();
 
-    const {signIn} = useAuth(); //isso depois será removido
-
-    //faz o login de forma automática para testar a aplicação
-    signIn('emailteste','senhateste');
-
     return (
         <BrowserRouter>
-            {logged ? <Home/> : <AuthRoutes/>}
+            <Layout>
+            {logged ? <AppRoutes/> : <AuthRoutes/>}
+            </Layout>
         </BrowserRouter>
+
     );
 }
 
