@@ -5,9 +5,6 @@ export const Container = styled.div`
     justify-content: center;
     align-items: center;
     height: 100vh;
-<<<<<<< HEAD
-    background-color: #f5f5f5;
-=======
     width: 100%; 
 `;
 
@@ -62,5 +59,4 @@ export const Button = styled.button`
     &:hover {
         background-color: #0056b3;
     }
->>>>>>> master
 `;

@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import React from "react";
-import { Container } from "./styles";
-
-const Home: React.FC = () => {
-    return(
-        <Container>
-            <h1>Login</h1>
-        </Container>
-    );
-    };
-=======
 import React, { useState } from "react";
 import { Container, LoginForm, Title, FormField, Label, Input, Button } from "./styles";
 
@@ -52,4 +40,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
->>>>>>> master
