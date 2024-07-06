@@ -1,4 +1,16 @@
-import styled from "styled-components";
+import styled,{keyframes} from "styled-components";
+
+const CardTransition = keyframes`
+    
+    from {
+        opacity: 0;
+        transform: translateY(+20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+`;
 
 export const Container = styled.div`
     display: flex;
@@ -10,10 +22,11 @@ export const Container = styled.div`
     width: 250px;
     height: 300px;
     flex-direction: column;
+    animation: ${CardTransition} 0.5s ease-in-out;
 
     &:hover {
         transform: translateY(-5px);
-        transition: 0.5s;
+        transition: transform 0.5s;
 
     }
 `;
