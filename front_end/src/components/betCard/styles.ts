@@ -16,14 +16,14 @@ const Hidden= css`
     opacity: 0;
     visibility: hidden;
     transform: scale(0.5);
-    transition: opacity 1s, transform 1s, visibility 1s;
+    transition: opacity .5s, transform .5s, visibility .5s;
 `;
 
 const Visible= css`
     opacity: 1;
     visibility: visible;
     transform: scale(1);
-    transition: opacity 1s, transform 1s, visibility 1s;
+    transition: opacity .5s, transform .5s, visibility .5s;
 `;
 
 export const Container = styled.div`
@@ -88,6 +88,12 @@ export const CardButtons = styled.div`
         align-items: flex-end;
         margin-top: 2px;
 
+    }
+
+    button{
+        &:active {
+            transform: scale(0.9);
+        }
     }
 
     & #confirm {

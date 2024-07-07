@@ -6,7 +6,7 @@ export const CardGrid = styled.div`
     grid-gap: 20px;
     row-gap: 35px;
     width: 70%;
-    height: 70vh;
+    height: 90%;
     grid-template-columns: repeat(3,1fr);
     overflow-y: auto;
     padding: 20px;

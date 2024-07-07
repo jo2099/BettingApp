@@ -8,6 +8,7 @@ export const Container = styled.div`
     width: 70%;
     color: #fff;
     gap: 10px;
+    padding-top: 20px;
 
     button {
         display: flex;
@@ -23,6 +24,13 @@ export const Container = styled.div`
         &:hover {
             background-color: #282236;
             color: #F51414;
+        }
+
+        &:active {
+            background-color: #F51414;
+            color: #fff;
+            transform: scale(0.9);
+            /* transition: transform 0.5s; */
         }
     }
 `;
