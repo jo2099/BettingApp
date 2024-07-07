@@ -1,6 +1,7 @@
 import React from "react";
-import { Container,AuthButtonsdiv,EnterButton,RegisterButton } from "./styles";
+import { Container,AuthButtonsdiv,EnterButton,RegisterButton,UserDiv } from "./styles";
 import { UserIcon } from "../userIcon";
+import CoinMeter from "../CoinMeter";
 import { useAuth } from "../../hooks/auth";
 import { useNavigate } from "react-router-dom";
 export const MainHeader: React.FC = () => {
@@ -10,7 +11,11 @@ export const MainHeader: React.FC = () => {
     
     return (
         <Container>
-            {logged ? <UserIcon/> :
+            {logged ?
+            <UserDiv>
+                <CoinMeter/> 
+                <UserIcon/>
+            </UserDiv> :
             <AuthButtonsdiv>
                 <RegisterButton>Cadastrar</RegisterButton>
                 <EnterButton onClick={()=>navigate('/login')}>Entrar</EnterButton>

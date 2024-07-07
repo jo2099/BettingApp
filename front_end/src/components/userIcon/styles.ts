@@ -17,8 +17,7 @@ export const Container = styled.div`
     justify-content: flex-end;
     background-color: #F51414;
     color: #fff;
-    align-items: flex-start; 
-    margin-right: 45px;
+    align-items: center; 
     position:relative;
 `;
 

@@ -52,3 +52,11 @@ export const RegisterButton = styled.button`
     border-radius: 5px;
     cursor: pointer;
     `;
+
+export const UserDiv = styled.div`
+    display: flex;
+    align-items: center;
+    margin-right: 4vmin;
+    gap: 7vmin;
+
+    `;
