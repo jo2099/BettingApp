@@ -1,4 +1,4 @@
-import styled,{keyframes} from "styled-components";
+import styled,{css, keyframes} from "styled-components";
 
 const CardTransition = keyframes`
     
@@ -12,23 +12,41 @@ const CardTransition = keyframes`
     }
 `;
 
+const Hidden= css`
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.5);
+    transition: opacity 1s, transform 1s, visibility 1s;
+`;
+
+const Visible= css`
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    transition: opacity 1s, transform 1s, visibility 1s;
+`;
+
 export const Container = styled.div`
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     background-color: #fff;
     color: #000;
     border-radius: 5%;
-    width: 250px;
-    height: 300px;
+    width: 300px;
+    height: 350px;
     flex-direction: column;
     animation: ${CardTransition} 0.5s ease-in-out;
-
     &:hover {
-        transform: translateY(-5px);
+        transform: translateY(-5px) scale(1.05);
         transition: transform 0.5s;
+        
 
     }
+    &.hidden {
+        ${Hidden}
+    }
+    
 `;
 
 export const CardHeader = styled.div`
@@ -41,6 +59,7 @@ export const CardHeader = styled.div`
     height: 40%;
     flex-direction: column;
     overflow: hidden;
+    margin-top: 10%;
 
     & > * {
         padding-top: 2px;
@@ -53,17 +72,48 @@ export const CardHeader = styled.div`
 
 export const CardButtons = styled.div`
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-end  ;
     align-items: center;
     background-color: transparent;
-    width: 90%;
+    width: 100%;
     height: 40%;
     color: #000;
-    width: 100%;
-    height: 20%;
-    flex-direction: row;
+    flex-direction: column;
 
-    button {
+    div{
+        display: flex;
+        width: 100%;
+        height: 45%;
+        justify-content: space-around;
+        align-items: flex-end;
+        margin-top: 2px;
+
+    }
+
+    & #confirm {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 35%;
+
+        button {
+            &:hover {
+                background-color: green;
+                color: #fff;
+            }
+        }            
+        &.visible {
+            ${Visible}
+        }
+    }
+
+    .hidden {
+        ${Hidden}
+    }
+
+
+
+   div button {
         display: flex;
         align-items: center;
         justify-content: space-around;
@@ -71,11 +121,28 @@ export const CardButtons = styled.div`
         color: #000;
         border-radius: 19px;
         width: 30%;
-        height: 30px;
+        height: 60%;
 
         &:hover {
             background-color: #000;
             color: #F51414;
         }
+
+    }
+`;
+
+export const StyledInput = styled.input`
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #3014c3;
+    color: #000;
+    border-radius: 19px;
+    width: 30%;
+    height: 60%;
+    padding-left: 5%;
+
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
     }
 `;
