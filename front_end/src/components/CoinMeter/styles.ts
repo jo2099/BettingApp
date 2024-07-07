@@ -9,8 +9,8 @@ export const Container = styled.div`
     align-items: center; 
     gap: 8px;
     img {
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
     }
 `;
 

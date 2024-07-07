@@ -34,7 +34,7 @@ const BetCard: React.FC<IBetCardProps> = ({team1,team2,score1,score2}) => {
           ))}
         </div>
         <div id="confirm" className={activeButton ? "visible" : "hidden"}>
-          <button onMouseDown={(event)=>event.preventDefault()} onClick={()=>console.log(inputValue)}>Confirmar</button>
+          <button onMouseDown={(event)=>event.preventDefault()} onClick={()=>console.log(inputValue,activeButton,{team1})}>Confirmar</button>
         </div>
         
       </CardButtons>

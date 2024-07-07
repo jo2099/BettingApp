@@ -142,7 +142,7 @@ export const StyledInput = styled.input`
     align-items: center;
     justify-content: space-around;
     background-color: #3014c3;
-    color: #000;
+    color: #fff;
     border-radius: 19px;
     width: 30%;
     height: 60%;
