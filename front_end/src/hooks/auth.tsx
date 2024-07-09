@@ -1,6 +1,7 @@
 import { resolve } from "path";
 import React,{createContext,useState,useContext} from "react";
 import { useNavigate } from "react-router-dom";
+import {authLogin,authRegister} from "../api/index";
 
 interface IAuthContext {
     logged: boolean;
@@ -24,21 +25,23 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
 
     const signIn = (email:string,password:string) => {
         //manda a requisição para o backend aqui ...
-        $.ajax({
-            url: 'http://localhost:5000/login',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({username: email, password: password}),
-            success: function(data){
-                console.log(data);
-            },
-            error: function(data){
-                alert('Erro ao logar');
-                console.log(data);
+        authLogin(email,password).then((data) => {
+            console.log("data",data);
+            if(data.status=="success"){
+                localStorage.setItem('@bet:logged','true');
+                setLogged(true);
+            }else{
+                if(data.message=='Invalid username or password'){
+                    alert('Usuário ou senha inválidos');
+                }
+                else{
+                    alert('Erro ao logar');
+                }
             }
+        }).catch((data) => {
+            alert('Erro ao logar');
+            console.log(data);
         });
-        localStorage.setItem('@bet:logged','true');
-        setLogged(true);
     }
 
     const signOut = () => {
@@ -48,29 +51,21 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
 
     const register = (email: string, password: string) => {
         //manda a requisição para o backend aqui ...
-        const request = new Promise((resolve, reject) => {
-            $.ajax({
-                url: 'http://localhost:5000/register',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ username: email, password: password, atribute: 1 }),
-                success: function (data) {
-                    resolve(data);
-                },
-                error: function (data) {
-                    reject(data);
+        authRegister(email,password).then((data) => {
+            console.log("data",data);
+            if(data.status=="success"){
+                alert('Registrado com sucesso');
+            }else{
+                if(data.message=="Username already exists"){
+                    alert('Usuário já existe');
+                }else{
+                    alert('Erro ao registrar');
                 }
-            });
-        });
-
-        request.then((data) => {
-           alert('Registrado com sucesso');
-           
-
+            }
         }).catch((data) => {
             alert('Erro ao registrar');
             console.log(data);
-        });
+        }); 
     }
 
 
