@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import React,{createContext,useState,useContext} from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +24,19 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
 
     const signIn = (email:string,password:string) => {
         //manda a requisição para o backend aqui ...
-
+        $.ajax({
+            url: 'http://localhost:5000/login',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({username: email, password: password}),
+            success: function(data){
+                console.log(data);
+            },
+            error: function(data){
+                alert('Erro ao logar');
+                console.log(data);
+            }
+        });
         localStorage.setItem('@bet:logged','true');
         setLogged(true);
     }
@@ -33,13 +46,31 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
         setLogged(false);
     }
 
-    const register = (email:string,password:string) => {
+    const register = (email: string, password: string) => {
         //manda a requisição para o backend aqui ...
+        const request = new Promise((resolve, reject) => {
+            $.ajax({
+                url: 'http://localhost:5000/register',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ username: email, password: password, atribute: 1 }),
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function (data) {
+                    reject(data);
+                }
+            });
+        });
 
-        //considerando que o server autorizou o registro
-        //avisar o usuário que o registro foi bem sucedido
-        alert("Registro bem sucedido");
-        signIn(email,password);
+        request.then((data) => {
+           alert('Registrado com sucesso');
+           
+
+        }).catch((data) => {
+            alert('Erro ao registrar');
+            console.log(data);
+        });
     }
 
 

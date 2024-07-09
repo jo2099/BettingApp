@@ -7,8 +7,10 @@ Created on Tue Jul  9 09:22:00 2024
 """
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Dicionário de exemplo para armazenar usuários
 users = {
@@ -21,6 +23,7 @@ users = {
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
+    print(data)
     username = data.get('username')
     password = data.get('password')
 
@@ -33,6 +36,7 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+    print(data)
     username = data.get('username')
     password = data.get('password')
     attribute = data.get('attribute')
