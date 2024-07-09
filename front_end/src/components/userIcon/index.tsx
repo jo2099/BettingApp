@@ -2,12 +2,14 @@ import React,{useEffect, useState,useRef} from "react"
 import { Container,UserMenu,UserButton,MenuButton } from "./styles"
 import icon from "../../assets/user-white.svg"
 import { useAuth } from "../../hooks/auth"
+import { useNavigate } from "react-router-dom"
 
 export const UserIcon: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
     const buttonRef = useRef<HTMLButtonElement>(null)
     const {signOut} = useAuth();
+    const navigate = useNavigate();
 
     const handleMenu = (event:React.MouseEvent) => {
         event.stopPropagation();
@@ -26,6 +28,11 @@ export const UserIcon: React.FC = () => {
         }
     },[]);
 
+    const handleSair = () => {
+        signOut();
+        navigate('/');
+    }
+
     return (
         <Container> 
             <UserButton ref={buttonRef} onClick={handleMenu}>
@@ -37,7 +44,7 @@ export const UserIcon: React.FC = () => {
             {isMenuOpen && (
                 <UserMenu ref={menuRef}>
                     <MenuButton>Perfil</MenuButton>
-                    <MenuButton onClick={signOut}>Sair</MenuButton>
+                    <MenuButton onClick={handleSair}>Sair</MenuButton>
                 </UserMenu>
             )}
         </Container>

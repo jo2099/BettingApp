@@ -1,27 +1,40 @@
 import React, { useState,useCallback } from "react";
 import { Container, LoginForm, Title, FormField, Label, Input, Button } from "./styles";
 import { useAuth } from "../../hooks/auth";
+import { useLocation } from "react-router-dom";
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const {signIn} = useAuth();
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const {signIn,register} = useAuth();
+    const location = useLocation();
 
-    
-    
+    const path= location.pathname;
+    const page = path.split("/").filter(Boolean)[0];
+
     const handleLogin = useCallback((event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
-    signIn(username, password);
-    }, [username, password]); // useCallback para evitar recriações desnecessárias da função
+    if(page=="login"){
+        signIn(username, password);
 
+    }else{
+        if(password !== confirmPassword){
+            alert("Senhas não conferem");
+            return;
+        }else{
+            register(username, password);
+        }
+    }
+    }, [username, password,confirmPassword]); // useCallback para evitar recriações desnecessárias da função
+
+    console.log(page)
 
     return (
         <Container>
             <LoginForm onSubmit={handleLogin}>
-                <Title>Login</Title>
+                <Title>{page=="login" ? "Login" : "Register" }</Title>
                 <FormField>
-                    <Label>Usuário:</Label>
+                    <Label>Email:</Label>
                     <Input 
                         type="text" 
                         value={username} 
@@ -38,6 +51,17 @@ const Login: React.FC = () => {
                         required 
                     />
                 </FormField>
+                {page=="register" && (
+                    <FormField>
+                        <Label>Confirme a senha:</Label>
+                        <Input 
+                            type="password" 
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required 
+                        />
+                    </FormField>
+                )}
                 <Button type="submit">Entrar</Button>
             </LoginForm>
         </Container>

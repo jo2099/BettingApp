@@ -1,9 +1,11 @@
 import React,{createContext,useState,useContext} from "react";
+import { useNavigate } from "react-router-dom";
 
 interface IAuthContext {
     logged: boolean;
     signIn(email:string,password:string):void;
     signOut():void;
+    register(email:string,password:string):void;
 } //isso é uma interface que define o que o contexto deve ter
 
 interface IAuthContextProvider {
@@ -31,9 +33,18 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
         setLogged(false);
     }
 
+    const register = (email:string,password:string) => {
+        //manda a requisição para o backend aqui ...
+
+        //considerando que o server autorizou o registro
+        //avisar o usuário que o registro foi bem sucedido
+        alert("Registro bem sucedido");
+        signIn(email,password);
+    }
+
 
     return (
-        <AuthContext.Provider value={{logged,signIn,signOut}}>
+        <AuthContext.Provider value={{logged,signIn,signOut,register}}>
             {children}
         </AuthContext.Provider>
     );

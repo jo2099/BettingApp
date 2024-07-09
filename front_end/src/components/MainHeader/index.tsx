@@ -17,7 +17,7 @@ export const MainHeader: React.FC = () => {
                 <UserIcon/>
             </UserDiv> :
             <AuthButtonsdiv>
-                <RegisterButton>Cadastrar</RegisterButton>
+                <RegisterButton onClick={()=>navigate('/register')}>Cadastrar</RegisterButton>
                 <EnterButton onClick={()=>navigate('/login')}>Entrar</EnterButton>
             </AuthButtonsdiv>}
         </Container>
