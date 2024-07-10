@@ -2,6 +2,3 @@ moacir,123456,10
 jefferson,123456,20
 joao,123456,25
 everton,123456,30
-teste,123456,-1
-a,a,-1
-s,s,-1

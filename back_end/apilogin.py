@@ -21,6 +21,12 @@ users = {
     'teste': {'password': '123456' , 'attribute': None}
 }
 
+jogoteste = {
+    'time1': {'nome': 'Flamengo', 'gols': 0},
+    'time2': {'nome': 'Vasco', 'gols': 0},
+    'tempo': 0,
+}
+
 def readusers():
     users = {}
     with open('users.txt', 'r') as f:
@@ -77,6 +83,12 @@ def register():
     writeusers(users);
 
     return jsonify({'status': 'success', 'message': 'User registered successfully'}), 201
+
+@app.route('/jogoteste', methods=['GET'])
+def getJogoTeste():
+
+    return jsonify({'status': 'success', 'message': 'Jogo teste', 'jogoteste': jogoteste}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

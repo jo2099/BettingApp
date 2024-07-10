@@ -7,7 +7,7 @@ interface IAuthContext {
     logged: boolean;
     signIn(email:string,password:string):void;
     signOut():void;
-    register(email:string,password:string):void;
+    register(email:string,password:string):Promise<boolean>;
 } //isso é uma interface que define o que o contexto deve ter
 
 interface IAuthContextProvider {
@@ -49,23 +49,28 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
         setLogged(false);
     }
 
-    const register = (email: string, password: string) => {
-        //manda a requisição para o backend aqui ...
-        authRegister(email,password).then((data) => {
-            console.log("data",data);
-            if(data.status=="success"){
+    const register = async (email: string, password: string) => {
+        try {
+            const data = await authRegister(email, password);
+            console.log("data", data);
+            if (data.status == "success") {
                 alert('Registrado com sucesso');
-            }else{
-                if(data.message=="Username already exists"){
+                return true;
+            } else {
+                if (data.message == "Username already exists") {
                     alert('Usuário já existe');
-                }else{
+                    return false;
+                } else {
                     alert('Erro ao registrar');
+                    return false;
                 }
             }
-        }).catch((data) => {
+        } catch (error) {
             alert('Erro ao registrar');
-            console.log(data);
-        }); 
+            console.log(error);
+            return false;
+        }
+        
     }
 
 
