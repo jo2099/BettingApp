@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "./styles";
-import coinImg from "../../assets/coin.svg";
+import coinImg from "../../assets/DonaGold.png";
 import { useUserData } from "../../hooks/userData";
 const CoinMeter: React.FC = () => {
     const { coins } = useUserData();
