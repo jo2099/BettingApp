@@ -8,6 +8,8 @@ def readUsers():
     f.close();
     return users;
 
+
+
 def writeUsers(users):
     with open('./Data/users.txt', 'w') as f:
         for user in users:

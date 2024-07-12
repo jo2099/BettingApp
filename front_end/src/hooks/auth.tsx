@@ -8,6 +8,7 @@ interface IAuthContext {
     signIn(email:string,password:string):void;
     signOut():void;
     register(email:string,password:string):Promise<boolean>;
+    getToken():string;
 } //isso é uma interface que define o que o contexto deve ter
 
 interface IAuthContextProvider {
@@ -29,6 +30,7 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
             console.log("data",data);
             if(data.status=="success"){
                 localStorage.setItem('@bet:logged','true');
+                localStorage.setItem('@bet:token',data.token);
                 setLogged(true);
             }else{
                 if(data.message=='Invalid username or password'){
@@ -47,6 +49,10 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
     const signOut = () => {
         localStorage.removeItem('@bet:logged');
         setLogged(false);
+    }
+
+    const getToken = () => {
+        return localStorage.getItem('@bet:token') || '';
     }
 
     const register = async (email: string, password: string) => {
@@ -75,7 +81,7 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
 
 
     return (
-        <AuthContext.Provider value={{logged,signIn,signOut,register}}>
+        <AuthContext.Provider value={{logged,signIn,signOut,register,getToken}}>
             {children}
         </AuthContext.Provider>
     );

@@ -2,3 +2,4 @@ moacir,123456,10
 jefferson,123456,20
 joao,123456,25
 everton,123456,30
+carlos,123,0

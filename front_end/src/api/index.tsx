@@ -22,3 +22,4 @@ export const authRegister = async (email: string, password: string) => {
     console.log(response)
     return response.json();
 }
+
