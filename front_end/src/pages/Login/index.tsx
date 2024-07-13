@@ -4,37 +4,42 @@ import { useAuth } from "../../hooks/auth";
 import { useLocation,useNavigate } from "react-router-dom";
 import { log } from "console";
 const Login: React.FC = () => {
-    const [email, setemail] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const {signIn,register} = useAuth();
+    const [isLoading, setIsLoading] = useState(false); // Estado para controlar o loading
+    const { signIn, register } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
 
-    const path= location.pathname;
+    const path = location.pathname;
     const page = path.split("/").filter(Boolean)[0];
 
     const handleLogin = useCallback((event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setIsLoading(true); // Ativa o loading
         const asyncHandler = async () => {
-            if(page=="login"){
-                await signIn(email, password);
-            }else{
-                if(password !== confirmPassword){
-                    alert("Senhas não conferem");
-                    return;
-                }else{
-                    const registered = await register(email, password);
-                    if(registered){
-                        navigate("/login");
+            try {
+                if (page == "login") {
+                    await signIn(email, password);
+                } else {
+                    if (password !== confirmPassword) {
+                        alert("Senhas não conferem");
+                        return;
+                    } else {
+                        const registered = await register(email, password);
+                        if (registered) {
+                            navigate("/login");
+                        }
                     }
                 }
+            } finally {
+                setIsLoading(false); // Desativa o loading após a conclusão
             }
         };
         asyncHandler();
-    }, [email, password, confirmPassword, page, signIn, register, navigate]); // useCallback para evitar recriações desnecessárias da função
+    }, [email, password, confirmPassword, page, signIn, register, navigate]);
 
-    console.log(page)
 
     return (
         <Container>
@@ -45,7 +50,7 @@ const Login: React.FC = () => {
                     <Input 
                         type="text" 
                         value={email} 
-                        onChange={(e) => setemail(e.target.value)}  
+                        onChange={(e) => setEmail(e.target.value)}  
                         required 
                     />
                 </FormField>
@@ -70,6 +75,7 @@ const Login: React.FC = () => {
                     </FormField>
                 )}
                 <Button type="submit">Entrar</Button>
+                {isLoading && <p>Carregando...</p>}
             </LoginForm>
         </Container>
     );
