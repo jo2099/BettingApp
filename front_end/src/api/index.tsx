@@ -1,25 +1,25 @@
 import React from "react";
 
 export const authLogin = async (email: string, password: string) => {
-    const response = await fetch('http://localhost:5000/auth/login', {
+    const response = await fetch('http://localhost:5000/user/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: email, password: password }),
+        body: JSON.stringify({ email: email, senha: password }),
     });
     return response.json();
 }
 
-export const authRegister = async (email: string, password: string) => {
-    const response = await fetch('http://localhost:5000/auth/register', {
+export const authRegister = async (username:string,email: string, password: string) => {
+    const response = await fetch('http://localhost:5000/user/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: email, password: password, atribute: 1 }),
+        body: JSON.stringify({ nome: username,email:email, senha: password}),
     });
-    console.log(response)
-    return response.json();
+    // let responsejson = await response.json(); 
+    return response;
 }
 

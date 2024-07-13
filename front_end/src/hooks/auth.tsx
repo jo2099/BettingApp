@@ -57,13 +57,13 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
 
     const register = async (email: string, password: string) => {
         try {
-            const data = await authRegister(email, password);
+            const data = await authRegister(email,email, password);
             console.log("data", data);
-            if (data.status == "success") {
+            if (data.status == 200) {
                 alert('Registrado com sucesso');
                 return true;
             } else {
-                if (data.message == "Username already exists") {
+                if (data.status == 200) {
                     alert('Usuário já existe');
                     return false;
                 } else {

@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/auth";
 import { useLocation,useNavigate } from "react-router-dom";
 import { log } from "console";
 const Login: React.FC = () => {
-    const [username, setUsername] = useState("");
+    const [email, setemail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const {signIn,register} = useAuth();
@@ -18,13 +18,13 @@ const Login: React.FC = () => {
         event.preventDefault();
         const asyncHandler = async () => {
             if(page=="login"){
-                await signIn(username, password);
+                await signIn(email, password);
             }else{
                 if(password !== confirmPassword){
                     alert("Senhas não conferem");
                     return;
                 }else{
-                    const registered = await register(username, password);
+                    const registered = await register(email, password);
                     if(registered){
                         navigate("/login");
                     }
@@ -32,7 +32,7 @@ const Login: React.FC = () => {
             }
         };
         asyncHandler();
-    }, [username, password, confirmPassword, page, signIn, register, navigate]); // useCallback para evitar recriações desnecessárias da função
+    }, [email, password, confirmPassword, page, signIn, register, navigate]); // useCallback para evitar recriações desnecessárias da função
 
     console.log(page)
 
@@ -44,8 +44,8 @@ const Login: React.FC = () => {
                     <Label>Email:</Label>
                     <Input 
                         type="text" 
-                        value={username} 
-                        onChange={(e) => setUsername(e.target.value)}  
+                        value={email} 
+                        onChange={(e) => setemail(e.target.value)}  
                         required 
                     />
                 </FormField>

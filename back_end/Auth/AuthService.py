@@ -1,10 +1,10 @@
-from Data.DataService import readUsers, writeUsers
+from Data.DataService import DataService
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token
 
 def Login(username, password):
 
-    users=readUsers();
+    users=DataService.getDB_users()
 
     if username in users and users[username]['password'] == password:
         user_attribute = users[username]['attribute']
@@ -14,15 +14,9 @@ def Login(username, password):
         return jsonify({'status': 'fail', 'message': 'Invalid username or password', 'token':''}), 401
     
 def Register(username,password):
-    users=readUsers();
-    if not username or not password:
-        return jsonify({'status': 'fail', 'message': 'Username and password are required'}), 400
-
-    if username in users:
-        return jsonify({'status': 'fail', 'message': 'Username already exists'}), 400
+    res=DataService.addDB_user({'nome':username,'email':username,'senha':password})
 
     users[username] = {'password': password, 'attribute': 0}
 
-    writeUsers(users);
 
     return jsonify({'status': 'success', 'message': 'User registered successfully'}), 201
