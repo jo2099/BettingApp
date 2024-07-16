@@ -43,7 +43,7 @@ export const UserIcon: React.FC = () => {
             </UserButton>
             {isMenuOpen && (
                 <UserMenu ref={menuRef}>
-                    <MenuButton>Perfil</MenuButton>
+                    <MenuButton onClick={()=>navigate("/Perfil")}>Perfil</MenuButton>
                     <MenuButton onClick={handleSair}>Sair</MenuButton>
                 </UserMenu>
             )}

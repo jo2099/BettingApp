@@ -1,8 +1,9 @@
-from flask import Flask, Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify,Response,stream_with_context
 from flask_cors import CORS
 from UserManagement.UserService import get_users,add_user,Login
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from Data.schemas.UserSchema import UsuarioSchema
+import time
 from marshmallow import ValidationError
 user_bp = Blueprint('user_bp', __name__)
 
@@ -33,7 +34,6 @@ def add_userC():
         return jsonify({'message': str(e)}), 400
     
 @user_bp.route('/login', methods=['POST'])
-
 def login():
     data = request.get_json()
     print(data)
@@ -41,3 +41,15 @@ def login():
     senha = data.get('senha')
 
     return Login(email, senha)
+
+
+
+@user_bp.route('/profile', methods=['GET'])
+def profile():
+    def generate_sse_events():
+        count = 0
+        while True:
+            count += 1
+            yield f"data: {count}\n\n"
+            time.sleep(1)
+    return Response(stream_with_context(generate_sse_events()), mimetype='text/event-stream')

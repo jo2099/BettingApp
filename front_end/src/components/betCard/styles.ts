@@ -124,7 +124,7 @@ export const CardButtons = styled.div`
         align-items: center;
         justify-content: space-around;
         background-color: #F51414;
-        color: #000;
+        color: #fff;
         border-radius: 19px;
         width: 30%;
         height: 60%;

@@ -5,7 +5,7 @@ import {authLogin,authRegister} from "../api/index";
 
 interface IAuthContext {
     logged: boolean;
-    signIn(email:string,password:string):void;
+    signIn(email:string,password:string):Promise<boolean>;
     signOut():void;
     register(email:string,password:string):Promise<boolean>;
     getToken():string;
@@ -24,26 +24,23 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
         return !!isLogged;
     });
 
-    const signIn = (email:string,password:string) => {
-        //manda a requisição para o backend aqui ...
-        authLogin(email,password).then((data) => {
-            console.log("data",data);
-            if(data.status=="success"){
+    const signIn = async (email: string, password: string) => {
+        try {
+            const data = await authLogin(email, password);
+            if (data.message == 'Login successful') {
                 localStorage.setItem('@bet:logged','true');
                 localStorage.setItem('@bet:token',data.token);
                 setLogged(true);
-            }else{
-                if(data.message=='Invalid username or password'){
-                    alert('Usuário ou senha inválidos');
-                }
-                else{
-                    alert('Erro ao logar');
-                }
+                return true;
+            } else {
+                alert('Usuário ou senha inválidos');
+                return false;
             }
-        }).catch((data) => {
+        } catch (error) {
             alert('Erro ao logar');
-            console.log(data);
-        });
+            console.log(error);
+            return false;
+        }
     }
 
     const signOut = () => {

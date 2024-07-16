@@ -21,7 +21,11 @@ const Login: React.FC = () => {
         const asyncHandler = async () => {
             try {
                 if (page == "login") {
-                    await signIn(email, password);
+                    const res=await signIn(email, password);
+                    //res é uma promise
+                    if(res){
+                        navigate("/home");}
+
                 } else {
                     if (password !== confirmPassword) {
                         alert("Senhas não conferem");
@@ -30,6 +34,8 @@ const Login: React.FC = () => {
                         const registered = await register(email, password);
                         if (registered) {
                             navigate("/login");
+                            setEmail("");
+                            setPassword("");
                         }
                     }
                 }
