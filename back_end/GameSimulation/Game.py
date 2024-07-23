@@ -6,7 +6,7 @@ from utils.Observer import Observer
 from utils.Publisher import Publisher
 
 class Bet(Observer):
-    def __init__(self,game):
+    def __init__(self,game,betted_result=None):
         self._game=game
         self._betters=[]
 
@@ -16,12 +16,16 @@ class Bet(Observer):
     def remove_betters(self,better):
         self._betters.remove(better)
 
+    def resolve_bet(self):
+        print("resolvendo apostas")
+        result=self._game.get_result()
+                
     def update(self,message):
         if message=="score":
-            print("betters notified")
-        else:
-            print("betters notified")
-            
+            print("betters notified score")
+        elif message=="end":
+            print("betters notified end")
+            print(self._game.get_result())
 
 class Game(ABC,Publisher):
     def __init__(self, time1,time2,duracoes_tempos_segundos=[10,10],tempos_intervalos=[5]):
@@ -82,7 +86,7 @@ class Game(ABC,Publisher):
         time.sleep(tempo_parado)
 
     def end(self):
-        print(self.get_result())
+        # print(self.get_result())
         print("O jogo acabou")
 
     def update(self, prob_event):
@@ -210,16 +214,17 @@ class Basquete(Game):
             if random.randint(0,100)<20:
                 print("Enterrada!")
                 self.cestas[f"time{time}"]["enterradas"]+=1
-        super().notify("score")
+        
 
     def event(self):
-        evento = random.choice(["falta", "score","toco"])
+        evento = random.choice(["falta", "score","toco","enterrada"])
         if evento == "falta":
             time_falta=random.choice([1,2])
             self.falta(time_falta)
         else:  # evento == "score"
             time_score = random.choice([1, 2])
             self.score(time_score)
+        super().notify(evento)
     
     def simulate(self):
         print("Iniciando a simulação")
@@ -232,6 +237,6 @@ class Basquete(Game):
 
 jogoteste = Futebol("Brasil","Argentina",[5,5],[2])
 jogoBasquete=Basquete("Lakers","Bulls",[5,5,5,5],[2,2,2])
-bet=Bet(jogoteste)
+bet=Bet(jogoBasquete)
 jogoBasquete.add_subscriber(bet)
 jogoBasquete.simulate()
