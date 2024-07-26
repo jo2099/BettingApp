@@ -1,3 +1,4 @@
 .env
 __pycache__/
 BackEnd_virtualEnv
+.venv
