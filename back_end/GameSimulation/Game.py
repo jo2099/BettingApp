@@ -6,9 +6,10 @@ from utils.Observer import Observer
 from utils.Publisher import Publisher
 
 class Bet(Observer):
-    def __init__(self,game,betted_result=None):
+    def __init__(self,game,betted_result=None,betted_amount=0):
         self._game=game
         self._betters=[]
+        self._betted_amount=betted_amount
 
     def add_betters(self,better):
         self._betters.append(better)
@@ -26,6 +27,69 @@ class Bet(Observer):
         elif message=="end":
             print("betters notified end")
             print(self._game.get_result())
+            self.resolve_bet()
+
+class WinningBet(Bet):
+    def __init__(self, game, betted_result=None,betted_amount=0):
+        super().__init__(game, betted_result,betted_amount)
+        self.bettedwinningTeam = betted_result
+    def resolve_bet(self):
+        print("resolvendo aposta")
+        result=self._game.get_result()
+        #considera empate
+        if result["time1"]["score"]==result["time2"]["score"]:
+            winningTeam="Empate"
+        elif result["time1"]["score"]>result["time2"]["score"]:
+            winningTeam=result["time1"]["nome"]
+        else:
+            winningTeam=result["time2"]["nome"]
+        
+        if winningTeam== self.bettedwinningTeam:
+            print("Parabéns! Você ganhou a aposta! winnig")
+            return True,self._betted_amount
+        else:
+            print("Que pena! Você perdeu a aposta!")
+            return False
+
+class CompoundedBet(Bet):
+    def __init__(self, game, betted_result=None,betted_amount=0):
+        super().__init__(game, betted_result,betted_amount)
+        #betted_result é uma lista de apostas
+        self.betted_result = betted_result
+    def resolve_bet(self):
+        print("resolvendo aposta")
+        result = self._game.get_result()
+        for bet in self.betted_result:
+            if bet.resolve_bet()==False:
+                print("Que pena! Você perdeu a aposta! compound")
+                return False
+        print("Parabéns! Você ganhou a aposta! compound")
+        print("ganhou",self._betted_amount)
+        return True,self._betted_amount
+
+class AtributeBet(Bet):
+    def __init__(self, game, betted_result=None,betted_amount=0):
+        super().__init__(game, betted_result,betted_amount)
+        #betted_result é um dicionarío com os atributos e valores que o usuário apostou
+        self.betted_result = betted_result
+    def resolve_bet(self):
+        print("resolvendo aposta")
+        print("beted result", self.betted_result)
+        result = self._game.get_result()
+        
+        for key, nested_dict in self.betted_result.items():
+            if key not in result:
+                print("Que pena! Você perdeu a aposta!")
+                return False
+            for nested_key, nested_value in nested_dict.items():
+                if nested_key not in result[key] or result[key][nested_key] != nested_value:
+                    print("Que pena! Você perdeu a aposta!")
+                    return False
+        
+        print("Parabéns! Você ganhou a aposta!")
+        return True,self._betted_amount
+        
+
 
 class Game(ABC,Publisher):
     def __init__(self, time1,time2,duracoes_tempos_segundos=[10,10],tempos_intervalos=[5]):
@@ -88,6 +152,7 @@ class Game(ABC,Publisher):
     def end(self):
         # print(self.get_result())
         print("O jogo acabou")
+        super().notify("end")
 
     def update(self, prob_event):
         # Atualiza timer
@@ -166,10 +231,11 @@ class Futebol(Game):
         else:  # evento == "score"
             time_score = random.choice([1, 2])
             self.score(time_score)
+        super().notify(evento)
 
     def get_result(self):
-        result={"time1":{"nome":self._time1,"score":self._score1,"cartoes":{"amarelo":self.cartoes["amarelo"]["time1"],"vermelho":self.cartoes["vermelho"]["time1"]}, "numFaltas":self._faltas1},
-                "time2":{"nome":self._time2,"score":self._score2,"cartoes":{"amarelo":self.cartoes["amarelo"]["time2"],"vermelho":self.cartoes["vermelho"]["time2"]}, "numFaltas":self._faltas2}}
+        result={"time1":{"nome":self._time1,"score":self._score1,"numFaltas":self._faltas1,"amarelos":self.cartoes["amarelo"]["time1"],"vermelhos":self.cartoes["vermelho"]["time1"]},
+                "time2":{"nome":self._time2,"score":self._score2,"numFaltas":self._faltas2,"amarelos":self.cartoes["amarelo"]["time2"],"vermelhos":self.cartoes["vermelho"]["time2"]}}
         return result
     
     def simulate(self):
@@ -186,9 +252,8 @@ class Basquete(Game):
         self.cestas={"time1":{"1":0,"2":0,"3":0,"enterradas":0},"time2":{"1":0,"2":0,"3":0,"enterradas":0}}
 
     def get_result(self):
-        result={"time1":{"nome":self._time1,"score":self._score1, "numFaltas":self._faltas1},
-                "time2":{"nome":self._time2,"score":self._score2, "numFaltas":self._faltas2},
-                "cestas":self.cestas}
+        result={"time1":{"nome":self._time1,"score":self._score1, "numFaltas":self._faltas1,"1":self.cestas["time1"]["1"],"2":self.cestas["time1"]["2"],"3":self.cestas["time1"]["3"],"enterradas":self.cestas["time1"]["enterradas"]},
+                "time2":{"nome":self._time2,"score":self._score2, "numFaltas":self._faltas2,"1":self.cestas["time2"]["1"],"2":self.cestas["time2"]["2"],"3":self.cestas["time2"]["3"],"enterradas":self.cestas["time2"]["enterradas"]}}
         return result
     
     def falta(self,time):
@@ -235,8 +300,12 @@ class Basquete(Game):
 
     
 
-jogoteste = Futebol("Brasil","Argentina",[5,5],[2])
+jogoteste = Futebol("Brasil","Argentina",[10],[])
 jogoBasquete=Basquete("Lakers","Bulls",[5,5,5,5],[2,2,2])
-bet=Bet(jogoBasquete)
-jogoBasquete.add_subscriber(bet)
-jogoBasquete.simulate()
+bet=CompoundedBet(jogoteste,[WinningBet(jogoteste,"Brasil")],200)
+jogoteste.add_subscriber(bet)
+jogoteste.simulate()
+
+# bet=CompoundedBet(jogoBasquete,[WinningBet(jogoBasquete,"Lakers")])
+# jogoBasquete.add_subscriber(bet)
+# jogoBasquete.simulate()
