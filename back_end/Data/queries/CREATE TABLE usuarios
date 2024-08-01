@@ -2,8 +2,44 @@ CREATE TABLE usuarios(
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    senha VARCHAR(100) NOT NULL
+    senha VARCHAR(100) NOT NULL,
+    tipo_usuario VARCHAR(100) NOT NULL DEFAULT 'comum'
 );
 
 INSERT INTO usuarios (nome,email,senha) VALUES ('joao','fleckjoaocarlos@gmail.com','123456'),('everton','everton@hotmail.com','123456');
  
+CREATE TABLE times (
+    id INTEGER PRIMARY KEY REFERENCES usuarios(id),
+    recompensas_fornecidas INTEGER[] DEFAULT '{}',  -- lista de ids de recompensas
+    favoritado_por INTEGER[] DEFAULT '{}'           -- lista de ids de usuários
+);
+
+
+CREATE TABLE recompensas(
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao VARCHAR(100) NOT NULL,
+    valor INT NOT NULL,
+);
+
+
+#LEMBRAR DE MUDAR PARA ADICIONAR A PARTE DAS INSTITUIÇÕES
+CREATE OR REPLACE FUNCTION inserir_time() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Verifica se o tipo do usuário é 'time'
+    IF NEW.tipo_usuario = 'time' THEN
+        -- Insere uma nova linha na tabela 'times' com o mesmo ID
+        INSERT INTO times (id) VALUES (NEW.id);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_inserir_time
+AFTER INSERT ON usuarios
+FOR EACH ROW
+EXECUTE FUNCTION inserir_time();
+
+
+INSERT INTO usuarios (id, nome, tipo_usuario) VALUES (1, 'Time A', 'time');
