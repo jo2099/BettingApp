@@ -1,28 +1,111 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Container } from "./styles";
 import BetCard from "../../components/betCard";
+import { IBetCardProps } from "../../components/betCard";
 import CardLayout from "../../components/CardLayout";
 import SportsButtons from "../../components/SportsButtons";
-
+import useSSE from "../../hooks/SSE";
 const Home: React.FC = () => {
 
     const [selectedSport, setSelectedSport] = React.useState<string>("Futebol");
+    const {addCallbackSSE,removeCallbackSSE } = useSSE();
 
-    let soccerCards=[{team1:"Flamengo", team2:"Vasco",score1:"3",score2:"1"} ,{team1:"São Paulo", team2:"Corinthians",score1:"2",score2:"2"},{team1:"Palmeiras", team2:"Santos",score1:"1",score2:"0"},{team1:"Grêmio", team2:"Internacional",score1:"0",score2:"1"},{team1:"Cruzeiro", team2:"Atlético-MG",score1:"2",score2:"2"},{team1:"Fluminense", team2:"Botafogo",score1:"1",score2:"1"},{team1:"Bahia", team2:"Vitória",score1:"3",score2:"2"},{team1:"Sport", team2:"Náutico",score1:"2",score2:"1"}];
-    let basketballCards=[{team1:"Lakers", team2:"Warriors",score1:"110",score2:"105"},{team1:"Bulls", team2:"Celtics",score1:"98",score2:"102"},{team1:"Rockets", team2:"Spurs",score1:"115",score2:"112"},{team1:"Heat", team2:"Nets",score1:"105",score2:"100"},{team1:"Clippers", team2:"Suns",score1:"112",score2:"108"},{team1:"Raptors", team2:"76ers",score1:"102",score2:"99"},{team1:"Mavericks", team2:"Nuggets",score1:"110",score2:"115"},{team1:"Trail Blazers", team2:"Jazz",score1:"100",score2:"105"}];
-    let tennisCards=[{team1:"Nadal", team2:"Djokovic",score1:"2",score2:"1"},{team1:"Federer", team2:"Murray",score1:"2",score2:"0"},{team1:"Nadal", team2:"Federer",score1:"2",score2:"1"},{team1:"Djokovic", team2:"Murray",score1:"2",score2:"0"},{team1:"Nadal", team2:"Murray",score1:"2",score2:"1"},{team1:"Djokovic", team2:"Federer",score1:"2",score2:"0"},{team1:"Nadal", team2:"Djokovic",score1:"2",score2:"1"},{team1:"Federer", team2:"Murray",score1:"2",score2:"0"}];
+    const [soccerCards,setSoccerCards]= useState<IBetCardProps[]>([]);
+    const [basketballCards,setBasketballCards]= useState<IBetCardProps[]>([]);
+    const [timers, setTimers] = useState<{ [key: string]: boolean }>({});
     
     const handleSportChange = (sport: string) => {
         setSelectedSport(sport);
-    }
+    };
+    const { eventSource, startSSE } = useSSE();
+    
+    const newGame=(data:any)=>{
+        //decodifica o json 
+        const obj = JSON.parse(data);
+        console.log(obj);
+        if(obj.event === "new_game"){
+            console.log("Novo jogo!!");
+            //cria um novo card no array do esporte
+            const tipo = obj.details.tipo;
+            if(tipo == "futebol") {
+                setSoccerCards((prev) => {
+                    return [
+                        ...prev,
+                        {
+                            team1: obj.details.time1,
+                            team2: obj.details.time2,
+                            gameid: obj.details.id,
+                            score1: "0",
+                            score2: "0",
+                        },
+                    ];
+                });
+            }
+            else if(tipo == "basquete") {
+                console.log("Novo jogo de basquete");
+                setBasketballCards((prev) => {
+                    return [
+                        ...prev,
+                        {
+                            team1: obj.details.time1,
+                            team2: obj.details.time2,
+                            gameid: obj.details.id,
+                            score1: "0",
+                            score2: "0",
+                        },
+                    ];
+                });
+            }
+        }
+        else if(obj.event === "end_game"){
+            //remove o card do array do esporte
+            if(obj.details.tipo == "futebol") {
+                console.log("Removendo jogo de futebol");
+                setSoccerCards((prev) => {
+                    console.log("Prev",prev); //printa o array de cards
+                    return prev.filter((card) => card.gameid !== obj.details.id);
+                });
+            }
+            else if(obj.details.tipo == "basquete") {
+                console.log("Removendo jogo de basquete");
+                setBasketballCards((prev) => {
+                    console.log("Prev",prev); //printa o array de cards
+                    return prev.filter((card) => card.gameid !== obj.details.id);
+                });
+            }
+        }
+    };
+    useEffect(() => {
+        console.log("Starting SSE");
+        startSSE();
+        addCallbackSSE(newGame);
+    }, []);
     
     return (
         <Container>
             <SportsButtons onSelectedSport={handleSportChange} />
             <CardLayout>
-                {selectedSport === "Futebol" && soccerCards.map((card, index) => <BetCard key={index} team1={card.team1} team2={card.team2} score1={card.score1} score2={card.score2} />)}
-                {selectedSport === "Basquete" && basketballCards.map((card, index) => <BetCard key={index} team1={card.team1} team2={card.team2} score1={card.score1} score2={card.score2} />)}
-                {selectedSport === "Tênis" && tennisCards.map((card, index) => <BetCard key={index} team1={card.team1} team2={card.team2} score1={card.score1} score2={card.score2} />)}
+                {selectedSport === "Futebol" && soccerCards.map((card) => (
+                    <BetCard
+                        key={card.gameid}
+                        team1={card.team1}
+                        team2={card.team2}
+                        gameid={card.gameid}
+                        score1={card.score1}
+                        score2={card.score2}
+                    />
+                ))}
+                {selectedSport === "Basquete" && basketballCards.map((card) => (
+                    <BetCard
+                        key={card.gameid}
+                        team1={card.team1}
+                        team2={card.team2}
+                        gameid={card.gameid}
+                        score1={card.score1}
+                        score2={card.score2}
+                    />
+                ))}
+            
             </CardLayout>
         </Container>
     );

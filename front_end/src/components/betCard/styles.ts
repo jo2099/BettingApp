@@ -152,3 +152,11 @@ export const StyledInput = styled.input`
         -webkit-appearance: none;
     }
 `;
+
+export const MiddleDiv = styled.div`
+    display:flex;
+    justify-content: space-around;
+    width: 100%;
+    height: 20%;
+    background-color: #fff;
+`;

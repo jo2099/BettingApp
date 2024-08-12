@@ -23,3 +23,13 @@ export const authRegister = async (username:string,email: string, password: stri
     return response;
 }
 
+export const getGameData = async (gameid: string) => {
+    const response = await fetch('http://localhost:5000/game/'+gameid, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    return response.json();
+}
+
