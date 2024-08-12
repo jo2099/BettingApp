@@ -24,7 +24,7 @@ CREATE TABLE recompensas(
 
 
 #LEMBRAR DE MUDAR PARA ADICIONAR A PARTE DAS INSTITUIÇÕES
-CREATE OR REPLACE FUNCTION inserir_time() 
+CREATE OR REPLACE FUNCTION inserir_time() --mudar nome para inserir_usuario depois 
 RETURNS TRIGGER AS $$
 BEGIN
     -- Verifica se o tipo do usuário é 'time'
