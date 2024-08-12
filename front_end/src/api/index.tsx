@@ -33,3 +33,13 @@ export const getGameData = async (gameid: string) => {
     return response.json();
 }
 
+export const sendBet = async (gameid: string, user_id:string, betvalue:any) => {
+    const response = await fetch('http://localhost:5000/bet/createbet',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({game_id:gameid,user_id:user_id,bet_value:betvalue}),
+    });
+} 
+

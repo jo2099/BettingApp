@@ -22,9 +22,10 @@ const Home: React.FC = () => {
     const newGame=(data:any)=>{
         //decodifica o json 
         const obj = JSON.parse(data);
-        console.log(obj);
+        // console.log(obj);
         if(obj.event === "new_game"){
             console.log("Novo jogo!!");
+            console.log(obj.details);
             //cria um novo card no array do esporte
             const tipo = obj.details.tipo;
             if(tipo == "futebol") {
@@ -37,6 +38,8 @@ const Home: React.FC = () => {
                             gameid: obj.details.id,
                             score1: "0",
                             score2: "0",
+                            temposSegundos: obj.details.temposSegundos,
+                            temposIntervalos: obj.details.temposIntervalos,
                         },
                     ];
                 });
@@ -52,6 +55,8 @@ const Home: React.FC = () => {
                             gameid: obj.details.id,
                             score1: "0",
                             score2: "0",
+                            temposSegundos: obj.details.temposSegundos,
+                            temposIntervalos: obj.details.temposIntervalos,
                         },
                     ];
                 });
@@ -93,6 +98,8 @@ const Home: React.FC = () => {
                         gameid={card.gameid}
                         score1={card.score1}
                         score2={card.score2}
+                        temposSegundos={card.temposSegundos}
+                        temposIntervalos={card.temposIntervalos}
                     />
                 ))}
                 {selectedSport === "Basquete" && basketballCards.map((card) => (
@@ -103,6 +110,8 @@ const Home: React.FC = () => {
                         gameid={card.gameid}
                         score1={card.score1}
                         score2={card.score2}
+                        temposSegundos={card.temposSegundos}
+                        temposIntervalos={card.temposIntervalos}
                     />
                 ))}
             

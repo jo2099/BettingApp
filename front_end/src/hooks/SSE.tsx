@@ -6,6 +6,8 @@ interface SSEContextProps {
   startSSE: () => void;
   addCallbackSSE: (callback: (data: any) => void) => void;
   removeCallbackSSE: (callback: (data: any) => void) => void;
+  addCallbackEventSSE: (idEvent: string,callback: (data: any) => void) => void;
+  removeCallbackEventSSE: (idEvent: string,callback: (data: any) => void) => void;
 }
 
 // Criação do contexto com valores iniciais
@@ -14,13 +16,18 @@ export const SSEContext = createContext<SSEContextProps>({
   startSSE: () => {},
   addCallbackSSE: () => {},
   removeCallbackSSE: () => {},
+  addCallbackEventSSE: () => {},
+  removeCallbackEventSSE: () => {},
 });
 
 // Provider para o contexto
 export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [eventSource, setEventSource] = useState<EventSource | null>(null);
+  const [gameEventSource, setGameEventSource] = useState<EventSource | null>(null);
   const [callbacks, setCallbacks] = useState<((data: any) => void)[]>([]);
+  const [eventCallbacks,setEventCallbacks] = useState<{ [key: string]: ((data: any) => void)[] }>({});
   const callbacksRef = React.useRef<((data: any) => void)[]>([]);
+  const eventCallbacksRef = React.useRef<{ [key: string]: ((data: any) => void)[] }>({});
 
   // Função para iniciar a conexão SSE
   const startSSE = useCallback(() => {
@@ -29,7 +36,7 @@ export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setEventSource(es);
 
       es.onmessage = (event) => {
-        console.log('Received message:', event.data);
+        // console.log('Received message:', event.data);
         // console.log("Event",event);
         //executar todos os callbacks
         callbacksRef.current.forEach((cb) => cb(event.data));
@@ -41,6 +48,22 @@ export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         es.close();
         setEventSource(null); // Limpar o estado para permitir reconexão
       };
+    }
+
+    if (!gameEventSource) {
+      const ges = new EventSource('http://localhost:5000/game/events/stream');
+      console.log("definiu o gameEventSource",ges);
+      setGameEventSource(ges);
+
+      ges.onmessage = (event) => {
+        console.log('Received message Event:', event.data);
+        const obj = JSON.parse(event.data);
+        const idEvent = obj.details.id;
+        //executar todos os callbacks do id correspondente
+        if(eventCallbacksRef.current[idEvent]){
+        eventCallbacksRef.current[idEvent].forEach((cb) => cb(event.data));
+        }
+      }
     }
   }, [eventSource]);
 
@@ -55,6 +78,29 @@ export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     callbacksRef.current = callbacksRef.current.filter((cb) => cb !== callback);
   }, []);
 
+
+  const addCallbackEventSSE = useCallback((idEvent: string,callback: (data: any) => void) => {
+    if(!eventCallbacksRef.current[idEvent]){
+      eventCallbacksRef.current[idEvent] = [];
+    }
+    setEventCallbacks((prev) => {
+      if(!prev[idEvent]){
+        prev[idEvent] = [];
+      }
+      return prev;
+    });
+    eventCallbacksRef.current[idEvent].push(callback);
+  }
+  , []);
+
+  const removeCallbackEventSSE = useCallback((idEvent: string,callback: (data: any) => void) => {
+    setEventCallbacks((prev) => {
+      prev[idEvent] = prev[idEvent].filter((cb) => cb !== callback);
+      return prev;
+    });
+    eventCallbacksRef.current[idEvent] = eventCallbacksRef.current[idEvent].filter((cb) => cb !== callback);
+  }, []);
+
   // Limpar a conexão quando o componente for desmontado
   useEffect(() => {
     return () => {
@@ -67,7 +113,7 @@ export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
 
   return (
-    <SSEContext.Provider value={{ eventSource, startSSE, addCallbackSSE,removeCallbackSSE }}>
+    <SSEContext.Provider value={{ eventSource, startSSE, addCallbackSSE,removeCallbackSSE,addCallbackEventSSE,removeCallbackEventSSE }}>
       {children}
     </SSEContext.Provider>
   );

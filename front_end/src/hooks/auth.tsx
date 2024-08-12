@@ -30,6 +30,7 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
             if (data.message == 'Login successful') {
                 localStorage.setItem('@bet:logged','true');
                 localStorage.setItem('@bet:token',data.token);
+                localStorage.setItem('@id',data.id);
                 setLogged(true);
                 return true;
             } else {
