@@ -27,3 +27,11 @@ class ApostaSchema(Schema):
     placar = fields.Str(dump_only=True)
     jogo = fields.Str(required=True)
     apostado_por = fields.List(fields.Integer(), required=True)    
+
+
+class BetSchema(Schema):
+    id=fields.String(dump_only=True)
+    user_id = fields.Integer(required=True)
+    game_id = fields.String(required=True)
+    bet = fields.String(required=True)
+    result = fields.String(required=True)

@@ -66,7 +66,7 @@ class DataService:
     def addBet(bet):
         from main import app
         with app.app_context():
-            new_bet = BetModel(user_id=bet['user_id'], game_id=bet['game_id'], bet=bet['bet'], result=bet['result'])
+            new_bet = BetModel(user_id=bet['user_id'], game_id=bet['game_id'], bet=bet['bet'], result=bet['result'],team1=bet['team1'],team2=bet['team2'],date=bet['date'],won=bet['won'])
             db.session.add(new_bet)
             db.session.commit()
             return {'message':'Aposta adicionada com sucesso!'}
@@ -74,5 +74,6 @@ class DataService:
     @staticmethod
     def getBets(user_id):
         bets = BetModel.query.filter_by(user_id=user_id).all()
+        bets=[bet.__dict__ for bet in bets]
         return bets
 

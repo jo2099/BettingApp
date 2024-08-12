@@ -83,3 +83,32 @@ export const ImageContainer = styled.div`
         display: block; /* Remove espaço abaixo da imagem */
     }
 `;
+
+export const HistoryCardLayout = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    height: 90%;
+`;
+
+export const HistoryCardContainer = styled.div`
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    margin-bottom: 10px;
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+
+    .green-text {
+        color: green;
+    }
+
+    .red-text {
+        color: red;
+    }
+`;
+

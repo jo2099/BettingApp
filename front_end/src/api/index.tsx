@@ -43,3 +43,13 @@ export const sendBet = async (gameid: string, user_id:string, betvalue:any) => {
     });
 } 
 
+
+export const getBets = async (userid: string) => {
+    const response = await fetch('http://localhost:5000/bet/bets/'+userid, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    return response.json();
+}

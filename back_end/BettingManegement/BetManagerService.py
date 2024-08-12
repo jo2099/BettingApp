@@ -25,3 +25,6 @@ class BetManager():
         else:
             raise Exception("Aposta inválida")
         
+    def getDoneBets(self,user_id):
+        from Data.DataService import DataService
+        return DataService.getBets(user_id)

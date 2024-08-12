@@ -90,17 +90,17 @@ class Game(ABC,Publisher):
 
     def stop(self, tempo_parado=0):
         # print("O jogo parou")
-        message={
-            "event":"stop_game",
-            "details":{
-                "id":str(self.id),
-                "time1":str(self._time1),
-                "time2":str(self._time2),
-                "tipo":self.tipo,
-            }}
-        json_message=json.dumps(message)
-        with messages_lock:
-            send_direct(json_message)
+        # message={
+        #     "event":"stop_game",
+        #     "details":{
+        #         "id":str(self.id),
+        #         "time1":str(self._time1),
+        #         "time2":str(self._time2),
+        #         "tipo":self.tipo,
+        #     }}
+        # json_message=json.dumps(message)
+        # with messages_lock:
+        #     send_direct(json_message)
         time.sleep(tempo_parado)
         
 
@@ -181,8 +181,8 @@ class Futebol(Game):
         else:
             self._score2+=1
             score=self._score2
-        # with messages_lock:
-        #     send_direct(json.dumps({"event":"score","details":{"id":str(self.id),"time":time,"score":str(score)}}))
+        with messages_lock:
+            send_direct(json.dumps({"event":"score","details":{"id":str(self.id),"time":time,"score":str(score)}}))
 
 
     def event(self):
@@ -245,8 +245,8 @@ class Basquete(Game):
             if random.randint(0,100)<20:
                 # print("Enterrada!")
                 self.cestas[f"time{time}"]["enterradas"]+=1
-        # with messages_lock:
-        #     send_direct(json.dumps({"event":"score","details":{"id":str(self.id),"time":time,"score":str(score)}}))
+        with messages_lock:
+            send_direct(json.dumps({"event":"score","details":{"id":str(self.id),"time":time,"score":str(score)}}))
         
         
 

@@ -1,6 +1,7 @@
 from utils.Observer import Observer
 from uuid import uuid4
 from Data.DataService import DataService
+import datetime
 #preciso ter o tracking na Bet de qual é o componente respectivo no frontEnd para atualizar
 
 class Bet(Observer):
@@ -52,15 +53,16 @@ class WinningBet(Bet):
             winningTeam=result["time2"]["nome"]
             multipler=self.multipliers[2]
         
+        date = datetime.date.today()
         print("WINNING TEAM",winningTeam)
         if winningTeam== self.bettedwinningTeam:
             print("Parabéns! Você ganhou a aposta! winnig")
-            print(DataService.addBet({"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"result":self.bettedwinningTeam}))
+            print(DataService.addBet({"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"result":self.bettedwinningTeam,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":True}))
             return True,self._betted_amount * multipler
         else:
             print("Que pena! Você perdeu a aposta!")
             print("voce apostou em",self.bettedwinningTeam)
-            print(DataService.addBet({"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"result":self.bettedwinningTeam}))
+            print(DataService.addBet({"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"result":self.bettedwinningTeam ,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":False}))
             return False
 
 class CompoundedBet(Bet):

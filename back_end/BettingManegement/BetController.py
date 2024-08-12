@@ -38,3 +38,17 @@ def add_randomgameBet():
         return jsonify(bet.tojson())
     except Exception as e:
         return str(e), 400
+    
+@bet_bp.route('/bets/<user_id>', methods=['GET'])
+def get_bets(user_id):
+    from .BetManagerService import BetManager
+    bets = BetManager().getDoneBets(user_id)
+    print("BETS",bets)
+    #tira o _sa_instance_state pq o json nao serializa isso
+    for bet in bets:
+        bet.pop('_sa_instance_state')
+        
+    print("BETS 2",bets)
+    return jsonify(bets)
+    # print("RESPONSE",response)
+
