@@ -8,6 +8,7 @@ from Data.DataService import DataService
 import threading
 from GameSimulation.GameSimulationService import GameService
 from GameSimulation.GameController import game_bp
+from BettingManegement.BetController import bet_bp
 
 import os
 
@@ -34,6 +35,7 @@ def start_game_service():
 # app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(user_bp, url_prefix='/user')
 app.register_blueprint(game_bp, url_prefix='/game')
+app.register_blueprint(bet_bp, url_prefix='/bet')
 if __name__ == '__main__':
     gameThread=start_game_service()
     app.run(debug=True, host='0.0.0.0', port=5000)

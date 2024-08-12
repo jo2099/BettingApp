@@ -1,6 +1,6 @@
 from .GameFactory import GameFactory
 from utils.Observer import Observer
-from .GameController import send_gameStream_message,remove_messages
+from .GameController import send_gameStream_message
 import time
 import random
 import queue
@@ -36,9 +36,9 @@ class GameService(Observer):
         #unpack na mensagem
         if(message[0]=="end"):
             msg,game = message
-            print("--------------------")
-            print("removendo jogo")
-            print("--------------------")
+            # print("--------------------")
+            # print("removendo jogo")
+            # print("--------------------")
             message={
                 "event":"end_game",
                 "details":{
@@ -49,12 +49,11 @@ class GameService(Observer):
                     "result":game.get_result()
                 }
             }
-            print("--------------------")
-            print("mandando end game")
-            print("--------------------")
+            # print("--------------------")
+            # print("mandando end game")
+            # print("--------------------")
             json_message=json.dumps(message)
             send_gameStream_message(json_message)
-            remove_messages(game.get_id())
             self.activeGames.remove(game)
 
 
@@ -70,7 +69,7 @@ class GameService(Observer):
         if(game!=None):
             game.add_subscriber(self)
             self.activeGames.add(game)
-            print("activeGames",self.activeGames)
+            # print("activeGames",self.activeGames)
             game.add_subscriber(self)
             message={
                 "event":"new_game",
@@ -78,12 +77,14 @@ class GameService(Observer):
                     "id":str(game.get_id()),
                     "time1":str(game.get_time1()),
                     "time2":str(game.get_time2()),
-                    "tipo":game.get_tipo()
+                    "tipo":game.get_tipo(),
+                    "temposSegundos":game.getduracoes_tempos_segundos(),
+                    "temposIntervalos":game.get_tempos_intervalos()
                 }
             }
             json_message=json.dumps(message)
             send_gameStream_message(json_message)
-            print("mandando mensagem")
+            # print("mandando mensagem")
             game.simulate()
             
             
@@ -93,9 +94,13 @@ class GameService(Observer):
     def getGames(self,tipo):
         return [game.get_result() for game in self.activeGames if game.get_tipo()==tipo]
     
-    def getGame(self,id):
+    def getGame(self,id:str):
+        activeGames=[str(game.get_id()) for game in self.activeGames]
+        print("activeGames",activeGames)
         for game in self.activeGames:
-            if game.get_id()==id:
+            idAtual=game.get_id()
+            idAtual=str(idAtual)
+            if idAtual==id:
                 return game
             
     def getRandomGame(self):

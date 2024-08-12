@@ -2,11 +2,13 @@ from abc import ABC, abstractmethod
 import time
 import random
 import threading
-from .GameController import send_direct,trigger_timer_update
+from .GameController import send_direct
 from utils.Publisher import Publisher
 from BettingManegement.Bet import *
 import uuid     
 import json
+
+messages_lock = threading.Lock()
 
 class Game(ABC,Publisher):
     def __init__(self, time1,time2,duracoes_tempos_segundos=[10,10],tempos_intervalos=[5]):
@@ -70,10 +72,24 @@ class Game(ABC,Publisher):
         return self._score2
 
     def start(self):
-        print("O jogo começou")
+        # print("O jogo começou")
+        ...
+        # message={"event":"start_game"
+        #          ,"details":{
+        #              "id":str(self.id),
+        #              "time1":str(self._time1),
+        #              "time2":str(self._time2),
+        #              "tipo":self.tipo,
+        #              "duracoes_tempos_segundos":str(self.duracoes_tempos_segundos),
+        #              "tempos_intervalos":str(self._tempos_intervalos)
+        #          }}
+        # json_message=json.dumps(message)
+        # print("MANDANDO START GAME")
+        # with messages_lock:
+        #     send_direct(json_message)
 
     def stop(self, tempo_parado=0):
-        print("O jogo parou")
+        # print("O jogo parou")
         message={
             "event":"stop_game",
             "details":{
@@ -83,19 +99,20 @@ class Game(ABC,Publisher):
                 "tipo":self.tipo,
             }}
         json_message=json.dumps(message)
-        send_direct(str(self.id),json_message)
+        with messages_lock:
+            send_direct(json_message)
         time.sleep(tempo_parado)
         
 
     def end(self):
         # print(self.get_result())
-        print("O jogo acabou")
+        # print("O jogo acabou")
         super().notify(list(["end",self]))
 
     def update(self, prob_event):
         
         self._timer += 1
-        trigger_timer_update(str(self.id), self._timer)
+        # trigger_timer_update(str(self.id), self._timer)
         
         intervalo = self.periodo_atual < self._num_tempos and self._timer == sum(self.duracoes_tempos_segundos[:self.periodo_atual+1])
         if intervalo:
@@ -164,10 +181,8 @@ class Futebol(Game):
         else:
             self._score2+=1
             score=self._score2
-        print("--------------------")
-        print("Gol!",time)
-        print("--------------------")
-        send_direct(str(self.id),json.dumps({"event":"score","details":{"id":str(self.id),"time":time,"score":str(score)}}))
+        # with messages_lock:
+        #     send_direct(json.dumps({"event":"score","details":{"id":str(self.id),"time":time,"score":str(score)}}))
 
 
     def event(self):
@@ -230,7 +245,8 @@ class Basquete(Game):
             if random.randint(0,100)<20:
                 # print("Enterrada!")
                 self.cestas[f"time{time}"]["enterradas"]+=1
-        send_direct(str(self.id),json.dumps({"event":"score","details":{"id":str(self.id),"time":time,"score":str(score)}}))
+        # with messages_lock:
+        #     send_direct(json.dumps({"event":"score","details":{"id":str(self.id),"time":time,"score":str(score)}}))
         
         
 
@@ -245,7 +261,7 @@ class Basquete(Game):
         super().notify(list([evento]))
     
     def simulate(self):
-        print("Iniciando a simulação")
+        # print("Iniciando a simulação")
         self.start()
         while self._timer < sum(self.duracoes_tempos_segundos):
             self.update(60)

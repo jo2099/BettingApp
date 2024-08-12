@@ -26,11 +26,6 @@ class GameFactory(Observer):
     def update(self,message):
         if(message[0]=="end"):
             msg,game = message
-            print("--------------------")
-            print("removendo jogo")
-            print("--------------------")
-            print("activeTeams")
-            print(self.activeTeams)
             if game in self.activeGames:
                 self.activeGames.remove(game)
             if game.get_time1() in self.activeTeams:
