@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from Data.Models.UsuarioModel import Usuario
+from Data.Models.BetModel import BetModel
 from Data.DB import db
 import os
 
@@ -60,3 +61,18 @@ class DataService:
                     users[user]['attribute'] = -1
                 f.write(f"{user},{users[user]['password']},{users[user]['attribute']}\n")
         f.close()
+
+    @staticmethod
+    def addBet(bet):
+        from main import app
+        with app.app_context():
+            new_bet = BetModel(user_id=bet['user_id'], game_id=bet['game_id'], bet=bet['bet'], result=bet['result'])
+            db.session.add(new_bet)
+            db.session.commit()
+            return {'message':'Aposta adicionada com sucesso!'}
+
+    @staticmethod
+    def getBets(user_id):
+        bets = BetModel.query.filter_by(user_id=user_id).all()
+        return bets
+
