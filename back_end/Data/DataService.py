@@ -27,6 +27,27 @@ class DataService:
         return users
     
     @staticmethod
+    def getDB_user(user_id): 
+        user = Usuario.query.filter_by(id=user_id).first()
+        print("USERDB",user)
+        if user == None:
+            raise Exception('Usuario nao encontrado')
+        return user.__dict__
+    
+    @staticmethod
+    def getDBModel(user_id):
+        user = Usuario.query.filter_by(id=user_id).first()
+        if user == None:
+            raise Exception('Usuario nao encontrado')
+        return user
+        _
+    
+    @staticmethod
+    def updateDB_user(user): #recebe um user e atualiza no banco
+        db.session.commit()
+        return {'message':'Usuario atualizado com sucesso!'}
+
+    @staticmethod
     def addDB_user( user:dict):
         existing_user = Usuario.query.filter_by(email=user['email']).first()
         if existing_user:

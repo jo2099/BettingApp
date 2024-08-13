@@ -52,11 +52,11 @@ export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (!gameEventSource) {
       const ges = new EventSource('http://localhost:5000/game/events/stream');
-      console.log("definiu o gameEventSource",ges);
+      // console.log("definiu o gameEventSource",ges);
       setGameEventSource(ges);
 
       ges.onmessage = (event) => {
-        console.log('Received message Event:', event.data);
+        // console.log('Received message Event:', event.data);
         const obj = JSON.parse(event.data);
         const idEvent = obj.details.id;
         //executar todos os callbacks do id correspondente

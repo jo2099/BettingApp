@@ -12,13 +12,13 @@ const root = ReactDOM.createRoot(
 root.render(
   // <React.StrictMode>
     <SSEProvider>
+      <UserProvider>
       <AuthProvider>  {/* provider que fornece o contexto de autenticação para todo o app  */}
         <GameDataProvider>
-        <UserProvider>
           <App />
-        </UserProvider>
         </GameDataProvider>
       </AuthProvider>
+        </UserProvider>
     </SSEProvider>
   // </React.StrictMode>
 );

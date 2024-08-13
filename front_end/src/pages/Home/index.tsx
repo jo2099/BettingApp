@@ -24,8 +24,8 @@ const Home: React.FC = () => {
         const obj = JSON.parse(data);
         // console.log(obj);
         if(obj.event === "new_game"){
-            console.log("Novo jogo!!");
-            console.log(obj.details);
+            // console.log("Novo jogo!!");
+            // console.log(obj.details);
             //cria um novo card no array do esporte
             const tipo = obj.details.tipo;
             if(tipo == "futebol") {
@@ -45,7 +45,7 @@ const Home: React.FC = () => {
                 });
             }
             else if(tipo == "basquete") {
-                console.log("Novo jogo de basquete");
+                // console.log("Novo jogo de basquete");
                 setBasketballCards((prev) => {
                     return [
                         ...prev,
@@ -65,16 +65,16 @@ const Home: React.FC = () => {
         else if(obj.event === "end_game"){
             //remove o card do array do esporte
             if(obj.details.tipo == "futebol") {
-                console.log("Removendo jogo de futebol");
+                // console.log("Removendo jogo de futebol");
                 setSoccerCards((prev) => {
-                    console.log("Prev",prev); //printa o array de cards
+                    // console.log("Prev",prev); //printa o array de cards
                     return prev.filter((card) => card.gameid !== obj.details.id);
                 });
             }
             else if(obj.details.tipo == "basquete") {
-                console.log("Removendo jogo de basquete");
+                // console.log("Removendo jogo de basquete");
                 setBasketballCards((prev) => {
-                    console.log("Prev",prev); //printa o array de cards
+                    // console.log("Prev",prev); //printa o array de cards
                     return prev.filter((card) => card.gameid !== obj.details.id);
                 });
             }

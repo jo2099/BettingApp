@@ -2,6 +2,7 @@ import { resolve } from "path";
 import React,{createContext,useState,useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import {authLogin,authRegister} from "../api/index";
+import { useUserData } from "./userData";
 
 interface IAuthContext {
     logged: boolean;
@@ -24,6 +25,8 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
         return !!isLogged;
     });
 
+    const {setCoins} = useUserData();
+
     const signIn = async (email: string, password: string) => {
         try {
             const data = await authLogin(email, password);
@@ -32,6 +35,9 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
                 localStorage.setItem('@bet:token',data.token);
                 localStorage.setItem('@id',data.id);
                 localStorage.setItem('@favTeam',data.favTeam);
+                localStorage.setItem('@coins',data.coins);
+                console.log("data", data);
+                setCoins(data.coins);
                 setLogged(true);
                 return true;
             } else {
@@ -47,6 +53,7 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
 
     const signOut = () => {
         localStorage.removeItem('@bet:logged');
+        localStorage.clear();
         setLogged(false);
     }
 

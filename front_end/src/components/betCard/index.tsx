@@ -83,10 +83,10 @@ const BetCard: React.FC<IBetCardProps> = ({ gameid, team1, team2, score1, score2
           }
         } else {
           // Simulação do tempo de intervalo
-          console.log("Tempo de intervalo antes", timerIntervalo);
+          // console.log("Tempo de intervalo antes", timerIntervalo);
           setTimerIntervalo((prevTimerIntervalo) => {
             if (prevTimerIntervalo < temposIntervalos[intervaloAtual]) {
-              console.log("Tempo de intervalo", prevTimerIntervalo + 1);
+              // console.log("Tempo de intervalo", prevTimer  Intervalo + 1);
               return prevTimerIntervalo + 1;
             } else {
               setIsIntervalo(false);

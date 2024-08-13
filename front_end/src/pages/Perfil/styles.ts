@@ -2,30 +2,33 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
     display: flex;
-    height: 100vh; /* Ocupa toda a altura da tela */
-    width: 100vw; /* Ocupa toda a largura da tela */
+    height: 100%; /* Ocupa toda a altura da tela */
+    width: 100%; /* Ocupa toda a largura da tela */
+    overflow: auto;
 `;
 
 export const LeftSection = styled.div`
-    flex: 1; /* Ocupa uma proporção do espaço disponível */
+    /* Ocupa uma proporção do espaço disponível */
+    /* flex: 1;  */
     padding: 20px;
     border-right: 1px solid #ccc;
     display: flex;
     flex-direction: column;
     align-items: center; /* Centraliza o conteúdo horizontalmente */
-    
-    box-sizing: border-box; /* Inclui padding e border no cálculo da largura */
+    width: 20%;
+    height: 100%;
 `;
 
 export const RightSection = styled.div`
-    flex: 3; /* Ocupa mais espaço do que a seção esquerda */
+    /* flex: 3; Ocupa mais espaço do que a seção esquerda */
+    width: 80%;
     padding: 20px;
     color: white;
     display: flex;
     flex-direction: column;
     align-items: center; /* Centraliza o conteúdo horizontalmente */
     justify-content: center; /* Centraliza o conteúdo verticalmente */
-    box-sizing: border-box; /* Inclui padding no cálculo da largura */
+    height: 100%;
 `;
 
 export const ProfilePicture = styled.div`
@@ -40,7 +43,6 @@ export const ProfilePicture = styled.div`
     margin-bottom: 20px; /* Espaço entre a foto e os botões */
     font-size: 20px;
     color: #666;
-    box-sizing: border-box; /* Inclui border no cálculo da largura */
 `;
 
 export const Button = styled.button`
@@ -87,21 +89,28 @@ export const ImageContainer = styled.div`
 export const HistoryCardLayout = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 90%;
+    /* justify-content: center; */
+    /* align-items: center; */
+    width: 100%;
     height: 90%;
-`;
+    overflow-y: scroll;
+    `;
 
 export const HistoryCardContainer = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 100%;
+    /* flex-grow: 1; */
+    width: 100% ;
     height: 10%;
     margin-bottom: 10px;
     background-color: white;
     color: black;
     border-radius: 8px;
+    flex-shrink: 0;
+    flex-grow: 0;
+
+
 
     .green-text {
         color: green;
@@ -109,6 +118,14 @@ export const HistoryCardContainer = styled.div`
 
     .red-text {
         color: red;
+    }
+
+    div{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        height: 75%;
     }
 `;
 

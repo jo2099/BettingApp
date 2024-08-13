@@ -1,38 +1,65 @@
-import React,{createContext,useState,useContext} from "react";
-
+import React, { createContext, useState, useContext,useEffect } from "react";
+import { setCoins as setCoinsAPI ,getCoins} from "../api";
+import useSSE from "./SSE";
 interface IUserContext {
     username: string;
     coins: number;
-    setCoins: React.Dispatch<React.SetStateAction<number>>;
-} //isso é uma interface que define o que o contexto deve ter
+    setCoins: (coins: number) => void; // Adiciona a função para atualizar as moedas
+}
 
 interface IUserContextProvider {
     children: React.ReactNode;
-} //isso é uma interface que define o que o provider deve ter
+}
 
-const UserContext = createContext<IUserContext>({} as IUserContext); //cria o contexto
+const UserContext = createContext<IUserContext>({} as IUserContext);
 
-const UserProvider: React.FC<IUserContextProvider> = ({children}) => {
-    const [username,setUsername] = useState<string>(() => {
-        const username = localStorage.getItem('@bet:username');
-        return username || '';
-    });
+const UserProvider: React.FC<IUserContextProvider> = ({ children}) => {
+    const [coins, setCoins] = useState<number>(0); // Usa o estado para armazenar as moedas
+    const logged= localStorage.getItem("@bet:logged");
+    const id= localStorage.getItem("@id");
+    useEffect(() => {
+        if (!id) return;
 
-    const [coins,setCoins] = useState<number>(() => {
-        const coins = localStorage.getItem('@bet:coins');
-        return Number(coins) || 0;
-    });
+        const eventSource = new EventSource('http://localhost:5000/user/userStream');
+        
+        eventSource.onmessage = (event) => { 
+            console.log("USER message", event);
+            const data = JSON.parse(event.data);
+            if (data.event === "coins" && data.user_id == id) {
+                getCoins(id).then((data) => {
+                    setCoins(data.coins);
+                });
+            }
+        };
+
+        eventSource.onerror = (error) => {
+            console.error('EventSource error:', error);
+            eventSource.close();
+        };
+
+        // Função de limpeza
+        return () => {
+            console.log("Closing EventSource");
+            eventSource.close();
+        };
+    }, [id]);
+
+
+
+
+
+
 
     return (
-        <UserContext.Provider value={{username,coins,setCoins}}>
+        <UserContext.Provider value={{ username:"", coins, setCoins }}>
             {children}
         </UserContext.Provider>
     );
-} //cria o provider
+};
 
-const useUserData = () => {
+function useUserData() {
     const context = useContext(UserContext);
     return context;
-} //cria um hook para usar o contexto
+}
 
-export {UserProvider,useUserData}; //exporta o provider e o hook
+export {useUserData, UserProvider}; // Exporta a função useUserData e o componente UserProvider

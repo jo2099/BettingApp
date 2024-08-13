@@ -2,13 +2,17 @@ from utils.Observer import Observer
 from uuid import uuid4
 from Data.DataService import DataService
 import datetime
+from UserManagement.UserService import addCoins,removeCoins
+from UserManagement.UserController import send_userStream_message
+import json
+from flask import jsonify
 #preciso ter o tracking na Bet de qual é o componente respectivo no frontEnd para atualizar
 
 class Bet(Observer):
     def __init__(self,game,user_id,betted_result=None,betted_amount=0):
         self._game=game
         self._betters=[]
-        self._betted_amount=betted_amount
+        self._betted_amount=float(betted_amount)
         self.multipliers=[1.5,1.1,2]
         #cria um id unico para a aposta
         self.id=uuid4()
@@ -55,20 +59,28 @@ class WinningBet(Bet):
             multipler=self.multipliers[2]
         
         date = datetime.date.today()
+        gain=round(float(self._betted_amount * multipler),2)
+        print("GAIN",gain)  
         print("DATE",date)
         print("WINNING TEAM",winningTeam)
         if winningTeam== self.bettedwinningTeam:
             print("Parabéns! Você ganhou a aposta! winnig")
-            bet={"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"betted":self.bettedwinningTeam,"result":winningTeam ,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":True}
+            bet={"user_id":self.user_id,"game_id":self._game.get_id(),"bet":gain,"betted":self.bettedwinningTeam,"result":winningTeam ,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":True}
             print("BET",bet)
             print(DataService.addBet(bet))
+            addCoins(self.user_id,gain)
+            send_userStream_message(json.dumps({"event":"coins","user_id":self.user_id}))
             return True,self._betted_amount * multipler
         else:
             print("Que pena! Você perdeu a aposta!")
             print("voce apostou em",self.bettedwinningTeam)
-            bet={"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"betted":self.bettedwinningTeam,"result":winningTeam ,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":False}
+            bet={"user_id":self.user_id,"game_id":self._game.get_id(),"bet":gain ,"betted":self.bettedwinningTeam,"result":winningTeam ,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":False}
             print("BET",bet)
             print(DataService.addBet(bet))
+            removeCoins(self.user_id,gain)
+            message={"event":"coins","user_id":self.user_id}
+            print("aehooo")
+            send_userStream_message(json.dumps(message))            
             return False
 
 class CompoundedBet(Bet):

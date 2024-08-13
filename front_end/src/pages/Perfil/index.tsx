@@ -5,7 +5,7 @@ import DonaGoldImage from '../../assets/DonaGold.png'; // Caminho correto para a
 import { getBets, getRewards, getTeams } from "../../api";
 import {addDays} from 'date-fns';
 import {toZonedTime} from 'date-fns-tz';
-
+import { useAuth } from "../../hooks/auth";
 interface HistoryCardProps {
     bet: String;
     betted: String;
@@ -32,12 +32,28 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ bet, betted,result, date, tea
 
     return (
         <HistoryCardContainer>
-            <p>Data: {formattedDateString}</p>
+            <div>
+            <p>Data</p>
+            <p> {formattedDateString}</p>
+            </div>
+            <div>
             <p>{team1} X {team2}</p>
-            <p>Aposta:{betted}</p>
-            <p>Ganhador: {result}</p>
-            <p>Resultado: <label className={won? "green-text":"red-text"}>{won ? '+' :'-' }{bet}</label></p>
+            </div>
+            <div>
+            <p>Aposta</p>
+            <p>{bet}</p>
+            </div>
+            <div>
+            <p>Ganhador</p>
+            <p>{result}</p>
+            </div>
+            <div>
+                <p>Resultado</p>
+                <p  className={won? "green-text":"red-text"}>{won ? '+' :'-' }{bet}</p>
+            </div>
+            <div>
             <p className={won? "green-text":"red-text"}>{won ? 'Ganhou' : 'Perdeu'}</p>
+            </div>
         </HistoryCardContainer>
     );
 }
@@ -48,15 +64,14 @@ const Perfil: React.FC = () => {
     const [teams, setTeams] = useState<{"id":number,"nome":String}[]>([]);
     const [favTeam, setFavTeam] = useState<number>(-1);
     const navigate = useNavigate();
+    const {signOut} = useAuth();
     const [view, setView] = useState<string>('userData'); // Estado para controlar o conteúdo exibido
     const handleButtonClick = (viewType: string) => {
         setView(viewType); // Atualiza o estado para mostrar o conteúdo correspondente
     };
 
     const handleLogout = () => {
-        alert('Logout'); // Lógica de logout a ser implementada
-        //volta para a pagina home
-        
+        signOut();
     };
 
     const handleGoBack = () => {
@@ -135,11 +150,121 @@ const Perfil: React.FC = () => {
                     </>
                 )}
                 {view === 'betHistory' && (
-                    <HistoryCardLayout>
-                        {bets.map((bet, index) => (
+                    <HistoryCardLayout id="aaa">
+                        {/* {bets.map((bet, index) => (
                             <HistoryCard key={index} bet={bet.bet} betted={bet.betted} result={bet.result} date={bet.date} team1={bet.team1} team2={bet.team2} won={bet.won} />
-                        ))}
-                    </HistoryCardLayout>
+                        ))} */}
+                        <HistoryCard
+                            bet="50.00"
+                            betted="Team A"
+                            result="Team A"
+                            date="2022-01-05"
+                            team1="Team A"
+                            team2="Team B"
+                            won={true}
+                        />
+
+                        <HistoryCard
+                            bet="60.00"
+                            betted="Team B"
+                            result="Team A"
+                            date="2022-01-06"
+                            team1="Team A"
+                            team2="Team B"
+                            won={false}
+                        />
+
+                        <HistoryCard
+                            bet="70.00"
+                            betted="Team A"
+                            result="Team A"
+                            date="2022-01-07"
+                            team1="Team A"
+                            team2="Team B"
+                            won={true}
+                        />
+
+                        <HistoryCard
+                            bet="80.00"
+                            betted="Team B"
+                            result="Team A"
+                            date="2022-01-08"
+                            team1="Team A"
+                            team2="Team B"
+                            won={false}
+                        />
+
+                        <HistoryCard
+                            bet="90.00"
+                            betted="Team A"
+                            result="Team A"
+                            date="2022-01-09"
+                            team1="Team A"
+                            team2="Team B"
+                            won={true}
+                        />
+
+                        <HistoryCard
+                            bet="100.00"
+                            betted="Team B"
+                            result="Team A"
+                            date="2022-01-10"
+                            team1="Team A"
+                            team2="Team B"
+                            won={false}
+                        />
+
+                        <HistoryCard
+                            bet="110.00"
+                            betted="Team A"
+                            result="Team A"
+                            date="2022-01-11"
+                            team1="Team A"
+                            team2="Team B"
+                            won={true}
+                        />
+
+                        <HistoryCard
+                            bet="120.00"
+                            betted="Team B"
+                            result="Team A"
+                            date="2022-01-12"
+                            team1="Team A"
+                            team2="Team B"
+                            won={false}
+                        />
+
+                            <HistoryCard
+                                bet="130.00"
+                                betted="Team A"
+                                result="Team A"
+                                date="2022-01-13"
+                                team1="Team A"
+                                team2="Team B"
+                                won={true}
+                            />
+
+                            <HistoryCard
+                                bet="140.00"
+                                betted="Team B"
+                                result="Team A"
+                                date="2022-01-14"
+                                team1="Team A"
+                                team2="Team B"
+                                won={false}
+                            />
+
+                            <HistoryCard
+                                bet="150.00"
+                                betted="Team A"
+                                result="Team A"
+                                date="2022-01-15"
+                                team1="Team A"
+                                team2="Team B"
+                                won={true}
+                            />
+
+                            </HistoryCardLayout>
                 )}
             </RightSection>
         </Container>

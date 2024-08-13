@@ -73,3 +73,25 @@ export const getTeams = async () => {
     });
     return response.json();
 }
+
+export const setCoins = async (userid:string,coins:number) => {
+    const response = await fetch('http://localhost:5000/user/setcoins',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({user_id:userid,coins:coins}),
+    });
+    console.log(JSON.stringify({user_id:userid,coins:coins}));
+}
+
+export const getCoins = async (userid:string) => {
+    const response = await fetch('http://localhost:5000/user/getcoins/'+userid, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    console.log("mandando getCOins",userid);
+    return response.json();
+}

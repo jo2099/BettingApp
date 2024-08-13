@@ -4,8 +4,11 @@ from UserManagement.UserService import get_users,add_user,Login,get_teams
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from Data.schemas.UserSchema import UsuarioSchema
 import time
+import queue
 from marshmallow import ValidationError
 user_bp = Blueprint('user_bp', __name__)
+
+userStreamMessages = queue.Queue()
 
 @user_bp.route('/users', methods=['GET'])
 # @jwt_required()
@@ -43,3 +46,35 @@ def login():
     senha = data.get('senha')
 
     return Login(email, senha)
+
+@user_bp.route('/setcoins', methods=['POST'])
+def set_coins():
+    data = request.get_json()
+    coins = data.get('coins')
+    user_id = data.get('user_id')
+    from UserManagement.UserService import setCoins
+    return setCoins(user_id, coins)
+
+@user_bp.route('/getcoins/<userid>', methods=['GET'])
+def get_coins(userid):
+    from UserManagement.UserService import getCoins
+    return getCoins(userid)
+
+
+def send_userStream_message(message):
+    print("SENDING")
+    userStreamMessages.put(message)
+
+@user_bp.route('/userStream')
+def game_stream():
+    def generate():
+        while True:
+            if not userStreamMessages.empty():
+                message = userStreamMessages.get()
+                print("yelding",message)
+                yield f"data: {message}\n\n"
+            else:
+                print("no message to yeld")
+                yield ":\n\n"
+            time.sleep(0.5)
+    return Response(generate(), mimetype="text/event-stream")
