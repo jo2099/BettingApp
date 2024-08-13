@@ -3,8 +3,6 @@ import { Container, LeftSection, RightSection, ProfilePicture, Button, UserData,
 import { useNavigate } from "react-router-dom";
 import DonaGoldImage from '../../assets/DonaGold.png'; // Caminho correto para a imagem
 import { getBets, getRewards, getTeams } from "../../api";
-import {addDays} from 'date-fns';
-import {toZonedTime} from 'date-fns-tz';
 import { useAuth } from "../../hooks/auth";
 interface HistoryCardProps {
     bet: String;
