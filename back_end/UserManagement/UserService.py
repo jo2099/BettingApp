@@ -14,6 +14,10 @@ def get_users(search=None):
     users = userschema.dump(usersDB)
     return jsonify(users)
 
+def get_teams():
+    teams = DataService.getDB_teams()
+    return jsonify(teams)
+
 def add_user(user:dict):
     return DataService.addDB_user(user)
 
@@ -22,6 +26,7 @@ def Login(email, password):
     userschema = UsuarioSchema(many=True)
     users = userschema.dump(users)
     for user in users:
+        print("User: ",user)
         if user['email'] == email and user['senha'] == password:
             acess_token = create_access_token(identity=email)
             return jsonify({'status': 'success', 'message': 'Login successful', 'token':acess_token,'id':user['id']}), 200

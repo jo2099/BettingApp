@@ -22,6 +22,7 @@ type ButtonId = '1' | 'X' | '2';
 
 const BetCard: React.FC<IBetCardProps> = ({ gameid, team1, team2, score1, score2,temposSegundos,temposIntervalos }) => {
   const [activeButton, setActiveButton] = useState<null | '1' | 'X' | '2'>(null);
+  const [inputVisible, setInputVisible] = useState<boolean>(true);
   const [inputValue, setInputValue] = useState<string>('0');
   const [running, setRunning] = useState<boolean>(true);
   const [timer, setTimer] = useState<number>(0);
@@ -123,6 +124,7 @@ const BetCard: React.FC<IBetCardProps> = ({ gameid, team1, team2, score1, score2
 
     const bet={winner:winnerteam,betted_amount:inputValue};
     console.log("Bet",bet);
+    setInputVisible(false);
     sendBet(game_id,userid,bet);
 
   }
@@ -136,6 +138,7 @@ const BetCard: React.FC<IBetCardProps> = ({ gameid, team1, team2, score1, score2
       </CardHeader>
       <MiddleDiv>
       </MiddleDiv>
+      {inputVisible &&
       <CardButtons>
         <div>
           {['1', 'X', '2'].map((buttonId) => (
@@ -143,14 +146,14 @@ const BetCard: React.FC<IBetCardProps> = ({ gameid, team1, team2, score1, score2
               <StyledInput key={buttonId} type="number" placeholder="0" autoFocus onBlur={() => setActiveButton(null)} onChange={(event) => { setInputValue(event.target.value); }} /> : 
               <button key={buttonId} onClick={() => setActiveButton(buttonId as ButtonId)}>
                 <h3>{buttonId}</h3>
-                <span>{buttonId === '1' ? '1.4' : buttonId === 'X' ? '2.4' : '3.4'}</span>
+                <span>{buttonId === '1' ? '1.5' : buttonId === 'X' ? '1.1' : '2'}</span>
               </button>
           ))}
         </div>
         <div id="confirm" className={activeButton ? "visible" : "hidden"}>
           <button onMouseDown={(event) => event.preventDefault()} onClick={handleConfirm}>Confirmar</button>
         </div>
-      </CardButtons>
+      </CardButtons>}
     </Container>
   );
 };

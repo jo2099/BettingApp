@@ -43,12 +43,12 @@ def add_randomgameBet():
 def get_bets(user_id):
     from .BetManagerService import BetManager
     bets = BetManager().getDoneBets(user_id)
-    print("BETS",bets)
+    # print("BETS",bets)
     #tira o _sa_instance_state pq o json nao serializa isso
     for bet in bets:
         bet.pop('_sa_instance_state')
         
-    print("BETS 2",bets)
+    # print("BETS 2",bets)
     return jsonify(bets)
     # print("RESPONSE",response)
 

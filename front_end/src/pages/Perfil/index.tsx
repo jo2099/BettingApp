@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Container, LeftSection, RightSection, ProfilePicture, Button, UserData, ImageContainer,HistoryCardLayout,HistoryCardContainer } from "./styles";
+import { Container, LeftSection, RightSection, ProfilePicture, Button, UserData, ImageContainer,HistoryCardLayout,HistoryCardContainer, RewardsCardsContainer, RewardCard } from "./styles";
 import { useNavigate } from "react-router-dom";
 import DonaGoldImage from '../../assets/DonaGold.png'; // Caminho correto para a imagem
-import { getBets } from "../../api";
+import { getBets, getRewards, getTeams } from "../../api";
+import {addDays} from 'date-fns';
+import {toZonedTime} from 'date-fns-tz';
 
 interface HistoryCardProps {
     bet: String;
+    betted: String;
     result: String;
     date: String;
     team1: String;
@@ -13,17 +16,16 @@ interface HistoryCardProps {
     won: Boolean;
 }
 
-const HistoryCard: React.FC<HistoryCardProps> = ({ bet, result, date, team1, team2, won }) => {
-    // Converte a string de data em um objeto Date
-    const formattedDate = new Date(String(date));
+const HistoryCard: React.FC<HistoryCardProps> = ({ bet, betted,result, date, team1, team2, won }) => {
+    const formatteddate = new Date(String(date));
 
     // Extrai o dia, mês e ano
-    const day = String(formattedDate.getDate()).padStart(2, '0');
-    const month = String(formattedDate.getMonth() + 1).padStart(2, '0'); // getMonth() retorna de 0 a 11
-    const year = formattedDate.getFullYear();
+    const day = formatteddate.getUTCDate();
+    const month = formatteddate.getUTCMonth() + 1; // getUTCMonth retorna o mês de 0 a 11, por isso somamos 1
+    const year = formatteddate.getUTCFullYear();
 
     // Formata a data como dd/mm/yyyy
-    const formattedDateString = `${day}/${month}/${year}`;
+    const formattedDateString = `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
 
     //coloca no maximo duas casas decimais em bet
     bet = parseFloat(String(bet)).toFixed(2);
@@ -31,16 +33,20 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ bet, result, date, team1, tea
     return (
         <HistoryCardContainer>
             <p>Data: {formattedDateString}</p>
-            <p>Aposta: <label className={won? "green-text":"red-text"}>{won ? '+' :'-' }{bet}</label></p>
             <p>{team1} X {team2}</p>
-            <p>Resultado: {result}</p>
+            <p>Aposta:{betted}</p>
+            <p>Ganhador: {result}</p>
+            <p>Resultado: <label className={won? "green-text":"red-text"}>{won ? '+' :'-' }{bet}</label></p>
             <p className={won? "green-text":"red-text"}>{won ? 'Ganhou' : 'Perdeu'}</p>
         </HistoryCardContainer>
     );
 }
 
 const Perfil: React.FC = () => {
-    const [bets, setBets] = useState<{"bet":String,"result":String,"date":String,"team1":String,"team2":String,"won":Boolean}[]>([]);
+    const [bets, setBets] = useState<{"bet":String,"betted":String,"result":String,"date":String,"team1":String,"team2":String,"won":Boolean}[]>([]);
+    const [rewards, setRewards]= useState<{"rewardTitle":String,"price":String,"user_id":number,"id":number}[]>([]);
+    const [teams, setTeams] = useState<{"id":number,"nome":String}[]>([]);
+    const [favTeam, setFavTeam] = useState<number>(-1);
     const navigate = useNavigate();
     const [view, setView] = useState<string>('userData'); // Estado para controlar o conteúdo exibido
     const handleButtonClick = (viewType: string) => {
@@ -64,9 +70,12 @@ const Perfil: React.FC = () => {
                 setBets(response);
                 console.log("response", response);
             });
-        }
-    }, []);
+            
 
+        }
+
+    }, []);
+    
 
     return (
         <Container>
@@ -98,12 +107,37 @@ const Perfil: React.FC = () => {
                     </>
                 )}
                 {view === 'premios' && (
-                    <p>Sessão de Prêmios - Conteúdo específico ainda não implementado.</p>
+                    <>
+                    {favTeam === -1 && (
+                        <>
+                        <h1>Escolha um time do coração</h1>
+                        <select value={favTeam} onChange={(e) =>( setFavTeam(Number(e.target.value)))}>
+                            <option value={-1}>Escolha um time</option>
+                            {teams.map((team) => (
+                                <option key={team.id} value={team.id}>
+                                    {team.nome}
+                                </option>
+                            ))}
+                        </select>
+                        </>
+                    )}
+                    {favTeam !== -1 && (
+                        <RewardsCardsContainer>
+                        {rewards.map((reward, index) => (
+                            <RewardCard key={index}>
+                                <h4>{reward.rewardTitle}</h4>
+                                <p>{reward.price}</p>
+                                <Button onClick={() => alert('Comprar Prêmio')}>Comprar</Button>
+                            </RewardCard>
+                        ))}
+                    </RewardsCardsContainer>
+                    )}
+                    </>
                 )}
                 {view === 'betHistory' && (
                     <HistoryCardLayout>
                         {bets.map((bet, index) => (
-                            <HistoryCard key={index} bet={bet.bet} result={bet.result} date={bet.date} team1={bet.team1} team2={bet.team2} won={bet.won} />
+                            <HistoryCard key={index} bet={bet.bet} betted={bet.betted} result={bet.result} date={bet.date} team1={bet.team1} team2={bet.team2} won={bet.won} />
                         ))}
                     </HistoryCardLayout>
                 )}

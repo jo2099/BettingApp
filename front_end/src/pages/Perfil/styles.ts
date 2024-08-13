@@ -112,3 +112,40 @@ export const HistoryCardContainer = styled.div`
     }
 `;
 
+export const RewardsCardsContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 90%;
+    height: 90%;
+    margin-bottom: 10px;
+    color: black;
+    border-radius: 8px;
+
+    .green-text {
+        color: green;
+    }
+
+    .red-text {
+        color: red;
+    }
+`;
+
+export const RewardCard= styled.div`
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    margin-bottom: 10px;
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+
+    .green-text {
+        color: green;
+    }
+
+    .red-text {
+        color: red;
+    }
+`;

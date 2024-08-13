@@ -39,6 +39,7 @@ class WinningBet(Bet):
     def __init__(self, game, user_id,betted_result=None,betted_amount=0):
         super().__init__(game, user_id,betted_result,betted_amount)
         self.bettedwinningTeam = betted_result
+        print("BETTED RESULT",betted_result)
     def resolve_bet(self):
         print("resolvendo aposta")
         result=self._game.get_result()
@@ -54,15 +55,20 @@ class WinningBet(Bet):
             multipler=self.multipliers[2]
         
         date = datetime.date.today()
+        print("DATE",date)
         print("WINNING TEAM",winningTeam)
         if winningTeam== self.bettedwinningTeam:
             print("Parabéns! Você ganhou a aposta! winnig")
-            print(DataService.addBet({"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"result":self.bettedwinningTeam,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":True}))
+            bet={"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"betted":self.bettedwinningTeam,"result":winningTeam ,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":True}
+            print("BET",bet)
+            print(DataService.addBet(bet))
             return True,self._betted_amount * multipler
         else:
             print("Que pena! Você perdeu a aposta!")
             print("voce apostou em",self.bettedwinningTeam)
-            print(DataService.addBet({"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"result":self.bettedwinningTeam ,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":False}))
+            bet={"user_id":self.user_id,"game_id":self._game.get_id(),"bet":self._betted_amount * multipler ,"betted":self.bettedwinningTeam,"result":winningTeam ,"team1":result["time1"]["nome"],"team2":result["time2"]["nome"],"date":date,"won":False}
+            print("BET",bet)
+            print(DataService.addBet(bet))
             return False
 
 class CompoundedBet(Bet):

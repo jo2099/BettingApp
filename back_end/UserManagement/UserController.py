@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, request, jsonify,Response,stream_with_context
 from flask_cors import CORS
-from UserManagement.UserService import get_users,add_user,Login
+from UserManagement.UserService import get_users,add_user,Login,get_teams
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from Data.schemas.UserSchema import UsuarioSchema
 import time
@@ -15,12 +15,14 @@ def users():
     print(search)
     return get_users(search)
 
+@user_bp.route('/users/teams', methods=['GET'])
+def users_teams():
+    return get_teams()
+    
 
 @user_bp.route('/register', methods=['POST'])
-# @jwt_required()
-def add_userC():
+def register():
     user = request.get_json()
-    print("--------------------",user)
     user_schema = UsuarioSchema()
     try:
         validated_user = user_schema.load(user)
@@ -41,15 +43,3 @@ def login():
     senha = data.get('senha')
 
     return Login(email, senha)
-
-
-
-@user_bp.route('/profile', methods=['GET'])
-def profile():
-    def generate_sse_events():
-        count = 0
-        while True:
-            count += 1
-            yield f"data: {count}\n\n"
-            time.sleep(1)
-    return Response(stream_with_context(generate_sse_events()), mimetype='text/event-stream')

@@ -20,10 +20,6 @@ const SportsButtons: React.FC<ISportsButtonsProps> = ({onSelectedSport}) => {
                 <img src={basketball} alt="Basket" width="20px" height="20px"/>
                 Basquete
             </button>
-            <button onClick={() => onSelectedSport && onSelectedSport('Tênis')}>
-                <img src={tennis} alt="Tênis" width="20px" height="20px"/>
-                Tênis
-            </button>
         </Container>
     );
 };

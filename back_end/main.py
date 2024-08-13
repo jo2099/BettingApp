@@ -1,6 +1,6 @@
 from flask import Flask,Blueprint, request, jsonify
 from flask_cors import CORS
-from Auth.authController import auth_bp
+# from Auth.authController import auth_bp
 from UserManagement.UserController import user_bp
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from dotenv import load_dotenv
@@ -9,6 +9,7 @@ import threading
 from GameSimulation.GameSimulationService import GameService
 from GameSimulation.GameController import game_bp
 from BettingManegement.BetController import bet_bp
+from Store.RewardController import reward_bp
 
 import os
 
@@ -36,6 +37,7 @@ def start_game_service():
 app.register_blueprint(user_bp, url_prefix='/user')
 app.register_blueprint(game_bp, url_prefix='/game')
 app.register_blueprint(bet_bp, url_prefix='/bet')
+app.register_blueprint(reward_bp, url_prefix='/reward')
 if __name__ == '__main__':
     gameThread=start_game_service()
     app.run(debug=True, host='0.0.0.0', port=5000)

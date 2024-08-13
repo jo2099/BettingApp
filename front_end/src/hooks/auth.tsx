@@ -31,6 +31,7 @@ const AuthProvider: React.FC<IAuthContextProvider> = ({children}) => {
                 localStorage.setItem('@bet:logged','true');
                 localStorage.setItem('@bet:token',data.token);
                 localStorage.setItem('@id',data.id);
+                localStorage.setItem('@favTeam',data.favTeam);
                 setLogged(true);
                 return true;
             } else {

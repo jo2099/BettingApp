@@ -27,11 +27,19 @@ CREATE TABLE Bets(
     user_id INTEGER REFERENCES usuarios(id),
     game_id VARCHAR(100) NOT NULL,
     bet VARCHAR(100) NOT NULL,
+    betted VARCHAR(100) NOT NULL,
     result VARCHAR(100) NOT NULL,
     team1 VARCHAR(100) NOT NULL,
     team2 VARCHAR(100) NOT NULL,
     date DATE NOT NULL,
     won BOOLEAN NOT NULL
+);
+
+CREATE TABLE rewards(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES usuarios(id),
+    rewardTitle VARCHAR(100) NOT NULL,
+    price FLOAT NOT NULL
 );
 
 

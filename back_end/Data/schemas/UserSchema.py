@@ -5,8 +5,7 @@ class UsuarioSchema(Schema):
     nome = fields.Str(required=True)
     email = fields.Str(required=True)
     senha = fields.Str(required=True)
-    tipo =  fields.Integer(dump_only=True)
-    saldo = fields.Decimal(required=True)   #saldo para apostadores podemos definir null para os outros usuarios 
+    tipo_usuario = fields.Str(required=True)
 
 class TimeSchema(Schema):
     id = fields.Integer(dump_only=True)
