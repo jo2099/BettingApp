@@ -7,6 +7,10 @@ public interface Bet {
 
   User getUser();
 
+  void setStatus(String status);
+
+  String getStatus();
+
   User setUser(User user);
 
   boolean resolve();

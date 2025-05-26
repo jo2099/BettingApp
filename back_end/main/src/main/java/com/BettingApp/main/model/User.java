@@ -19,6 +19,7 @@ public class User {
   private String username;
   private String password;
   private String email;
+  private Long coins = 1000L; // Default coins for a new user
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<AbstractBet> bets;
@@ -72,4 +73,7 @@ public class User {
     this.bets = bets;
   }
 
+  public Long getCoins() {
+    return this.coins;
+  }
 }

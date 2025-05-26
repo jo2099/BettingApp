@@ -13,6 +13,15 @@ import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = SoccerBet.class, name = "soccer")
+// @JsonSubTypes.Type(value = BasketballBet.class, name = "basketball"),
+})
 @Entity
 @Table(name = "bets")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -23,12 +32,11 @@ public abstract class AbstractBet implements Bet {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private Double amount;
-
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
+  @JsonProperty("betAmount")
   private Double betAmount;
   private String betAttribute;
 
