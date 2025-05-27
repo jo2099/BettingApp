@@ -1,6 +1,6 @@
 package com.BettingApp.main.model;
 
-enum GameStatus {
+public enum GameStatus {
   PENDING,
   IN_PROGRESS,
   COMPLETED,

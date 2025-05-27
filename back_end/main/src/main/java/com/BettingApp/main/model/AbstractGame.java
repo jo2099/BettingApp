@@ -3,6 +3,7 @@ package com.BettingApp.main.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,7 +24,14 @@ public abstract class AbstractGame {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Transient
+  GameStatus status = GameStatus.PENDING;
+
+  @ManyToOne
+  @JoinColumn(name = "home_team_id", nullable = false)
   private AbstractTeam homeTeam;
+  @ManyToOne
+  @JoinColumn(name = "away_team_id", nullable = false)
   private AbstractTeam awayTeam;
 
   public AbstractGame() {
@@ -47,8 +55,8 @@ public abstract class AbstractGame {
     return homeTeam;
   }
 
-  public void setHomeTeam(AbstractTeam homeTeam) {
-    this.homeTeam = homeTeam;
+  public void setHomeTeam(AbstractTeam team) {
+    this.homeTeam = team;
   }
 
   public AbstractTeam getAwayTeam() {

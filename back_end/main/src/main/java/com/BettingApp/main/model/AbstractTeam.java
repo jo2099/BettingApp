@@ -17,5 +17,17 @@ import jakarta.persistence.JoinColumn;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "team_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class AbstractTeam {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
   private String name;
+
+  public AbstractTeam() {
+    // Default constructor
+  }
+
+  public AbstractTeam(String name) {
+    this.name = name;
+  }
 }

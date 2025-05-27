@@ -17,8 +17,8 @@ public class SoccerGame extends AbstractGame {
   private int awayScore;
   private int numYellows;
   private int numReds;
-  private GameStatus status = GameStatus.PENDING;
   private Long duration; // Duration in seconds for each half
+  private Long interval_duration = 15L; // Interval duration in seconds
 
   public SoccerGame() {
     // Default constructor
@@ -46,6 +46,62 @@ public class SoccerGame extends AbstractGame {
     this.season = season;
   }
 
+  public int getHomeScore() {
+    return homeScore;
+  }
+
+  public void setHomeScore(int homeScore) {
+    this.homeScore = homeScore;
+  }
+
+  public int getAwayScore() {
+    return awayScore;
+  }
+
+  public void setAwayScore(int awayScore) {
+    this.awayScore = awayScore;
+  }
+
+  public int getNumYellows() {
+    return numYellows;
+  }
+
+  public void setNumYellows(int numYellows) {
+    this.numYellows = numYellows;
+  }
+
+  public int getNumReds() {
+    return numReds;
+  }
+
+  public void setNumReds(int numReds) {
+    this.numReds = numReds;
+  }
+
+  public GameStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(GameStatus status) {
+    this.status = status;
+  }
+
+  public Long getDuration() {
+    return duration;
+  }
+
+  public void setDuration(Long duration) {
+    this.duration = duration;
+  }
+
+  public Long getIntervalDuration() {
+    return interval_duration;
+  }
+
+  public void setIntervalDuration(Long interval_duration) {
+    this.interval_duration = interval_duration;
+  }
+
   public boolean simulate() {
     // Simulate the game by randomly generating scores and events
     this.status = GameStatus.IN_PROGRESS;
@@ -66,7 +122,7 @@ public class SoccerGame extends AbstractGame {
     }
 
     try {
-      TimeUnit.SECONDS.sleep(15); // 15 seconds break
+      TimeUnit.SECONDS.sleep(interval_duration); // 15 seconds break
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       return false;
