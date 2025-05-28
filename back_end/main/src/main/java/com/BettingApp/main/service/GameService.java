@@ -8,6 +8,7 @@ import com.BettingApp.main.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.Optional;
 import java.util.Random;
@@ -19,6 +20,8 @@ public class GameService {
   private GameRepository gameRepository;
 
   private final Random random = new Random();
+  @Autowired
+  private SimpMessagingTemplate messagingTemplate;
 
   public AbstractGame createRandomGame() {
     // TODO
@@ -47,6 +50,10 @@ public class GameService {
       System.err.println("Falha na simulação do jogo.");
     }
 
+  }
+
+  public void notifyClients(String message) {
+    messagingTemplate.convertAndSend("/topic/game-status", message);
   }
 
 }

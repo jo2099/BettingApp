@@ -14,7 +14,7 @@ public interface GameRepository extends JpaRepository<AbstractGame, Long> {
   List<AbstractGame> findAll();
 
   // Buscar todos os jogos com um status específico
-  List<AbstractGame> findByStatus(GameStatus status);
+  // List<AbstractGame> findByStatus(GameStatus status);
 
   // // Buscar jogos por atributo e valor
   // List<AbstractGame> findByGameAttributeAndGameValue(String gameAttribute,
