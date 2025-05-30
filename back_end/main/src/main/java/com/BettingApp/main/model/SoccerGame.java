@@ -3,6 +3,10 @@ package com.BettingApp.main.model;
 import java.util.concurrent.TimeUnit;
 
 import com.BettingApp.main.model.GameStatus;
+import com.BettingApp.main.model.AbstractTeam;
+import com.BettingApp.main.util.Event;
+import com.BettingApp.main.util.Publisher;
+import com.BettingApp.main.model.GameEvent;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.DiscriminatorValue;
@@ -102,6 +106,13 @@ public class SoccerGame extends AbstractGame {
     this.interval_duration = interval_duration;
   }
 
+  public GameEvent generateRandomEvent() {
+    GameEvent event = new GameEvent(this, "Goal");
+
+    return event;
+
+  }
+
   public boolean simulate() {
     // Simulate the game by randomly generating scores and events
     this.status = GameStatus.IN_PROGRESS;
@@ -111,6 +122,9 @@ public class SoccerGame extends AbstractGame {
     while (System.currentTimeMillis() < firstHalfEndTime && this.status == GameStatus.IN_PROGRESS) {
       // Simulate random events for the first half
       // Example: generateRandomEvent();
+      Event event = generateRandomEvent();
+      this.publish(event); // Publish the event to subscribers
+      // Notify clients about the event
 
       // Wait 5 seconds between events
       try {

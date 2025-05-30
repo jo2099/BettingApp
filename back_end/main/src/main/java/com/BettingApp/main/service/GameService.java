@@ -4,6 +4,10 @@ import com.BettingApp.main.model.AbstractGame;
 import com.BettingApp.main.model.AbstractTeam;
 import com.BettingApp.main.model.SoccerGame;
 import com.BettingApp.main.model.SoccerTeam;
+import com.BettingApp.main.util.Subscriber;
+import com.BettingApp.main.service.TeamService;
+import com.BettingApp.main.util.Event;
+import com.BettingApp.main.model.GameEvent;
 import com.BettingApp.main.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,23 +16,29 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 @Service
-public class GameService {
+public class GameService implements Subscriber<Event> {
 
   @Autowired
   private GameRepository gameRepository;
+  @Autowired
+  private TeamService teamService;
 
   private final Random random = new Random();
   @Autowired
   private SimpMessagingTemplate messagingTemplate;
 
+  private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+
   public AbstractGame createRandomGame() {
     // TODO
     // implementar a logica para criacao de jogo aleatorio
     SoccerGame game = new SoccerGame();
-    game.setHomeTeam(new SoccerTeam("Team A", "League 1", "2023/2024"));
-    game.setAwayTeam(new SoccerTeam("Team B", "League 1", "2023/2024"));
+    game.setHomeTeam(teamService.getRandomSoccerTeam());
+    game.setAwayTeam(teamService.getRandomSoccerTeam());
     game.setLeague("Premiere League");
     game.setDuration(5L);
     game.setIntervalDuration(1L);
@@ -41,19 +51,32 @@ public class GameService {
   public void generateAndSimulateGames() {
     // Gera um jogo aleatório
     AbstractGame game = createRandomGame();
+    game.subscribe(this);
 
-    boolean simulationresult = game.simulate();
+    System.out.println("Gerando jogo: ");
 
-    if (simulationresult) {
-      gameRepository.save(game);
-    } else {
-      System.err.println("Falha na simulação do jogo.");
-    }
-
+    executorService.submit(() -> {
+      try {
+        boolean simulationresult = game.simulate();
+        if (simulationresult) {
+          gameRepository.save(game);
+        } else {
+          System.err.println("Falha na simulação do jogo.");
+        }
+      } catch (Exception e) {
+        System.err.println("Erro ao simular o jogo: " + e.getMessage());
+      }
+    });
   }
 
   public void notifyClients(String message) {
     messagingTemplate.convertAndSend("/topic/game-status", message);
   }
 
+  public void receive(Event event) {
+    if (event instanceof GameEvent) {
+      String message = ((GameEvent) event).toJson();
+      notifyClients(message);
+    }
+  }
 }

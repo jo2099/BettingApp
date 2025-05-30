@@ -1,5 +1,6 @@
 package com.BettingApp.main.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
@@ -7,7 +8,9 @@ import jakarta.persistence.Entity;
 @DiscriminatorValue("SOCCER")
 public class SoccerTeam extends AbstractTeam {
 
+  @Column
   private String league;
+  @Column
   private String season;
 
   public SoccerTeam() {

@@ -13,12 +13,15 @@ import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import com.BettingApp.main.util.Publisher;
+import com.BettingApp.main.util.Event;
+import com.BettingApp.main.util.Subscriber;
 
 @Entity
 @Table(name = "games")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "game_type", discriminatorType = DiscriminatorType.STRING)
-public abstract class AbstractGame {
+public abstract class AbstractGame implements Publisher<Event> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +36,9 @@ public abstract class AbstractGame {
   @ManyToOne
   @JoinColumn(name = "away_team_id", nullable = false)
   private AbstractTeam awayTeam;
+
+  @Transient
+  private java.util.List<Subscriber<Event>> subscribers = new java.util.ArrayList<>();
 
   public AbstractGame() {
     // Default constructor
@@ -68,5 +74,22 @@ public abstract class AbstractGame {
   }
 
   public abstract boolean simulate();
+
+  @Override
+  public void publish(Event item) {
+    for (Subscriber<Event> subscriber : subscribers) {
+      subscriber.receive(item);
+    }
+  }
+
+  @Override
+  public void subscribe(Subscriber<Event> subscriber) {
+    subscribers.add(subscriber);
+  }
+
+  @Override
+  public void unsubscribe(Subscriber<Event> subscriber) {
+    subscribers.remove(subscriber);
+  }
 
 }
